@@ -229,7 +229,10 @@ func (p *ClientProxy) Start(opt ...Option) (retErr error) {
 
 	activeConnCh := make(chan int32)
 	activeConnFn := func(d int32) {
-		activeConnCh <- p.activeConns.Add(d)
+		select {
+		case activeConnCh <- p.activeConns.Add(d):
+		case <-p.ctx.Done():
+		}
 	}
 
 	fin := make(chan error, 10)
@@ -337,7 +340,11 @@ func (p *ClientProxy) Start(opt ...Option) (retErr error) {
 			case connsLeft := <-p.connsLeftCh:
 				p.connectionsLeft.Store(connsLeft)
 				if p.callerConnsLeftCh != nil {
-					p.callerConnsLeftCh <- connsLeft
+					select {
+					case p.callerConnsLeftCh <- connsLeft:
+					case <-p.ctx.Done():
+						return
+					}
 				}
 				if connsLeft == 0 {
 					// Close the listener as we can't authorize any more

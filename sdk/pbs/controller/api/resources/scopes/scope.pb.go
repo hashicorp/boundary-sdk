@@ -141,8 +141,10 @@ type Scope struct {
 	AuthorizedCollectionActions map[string]*structpb.ListValue `protobuf:"bytes,310,rep,name=authorized_collection_actions,proto3" json:"authorized_collection_actions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// The attached storage policy id.
 	StoragePolicyId string `protobuf:"bytes,320,opt,name=storage_policy_id,proto3" json:"storage_policy_id,omitempty" class:"public"` // @gotags: `class:"public"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// The alias suffix associated with this scope, if any.
+	AliasSuffix   string `protobuf:"bytes,330,opt,name=alias_suffix,proto3" json:"alias_suffix,omitempty" class:"public"` // @gotags: `class:"public"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Scope) Reset() {
@@ -262,6 +264,13 @@ func (x *Scope) GetAuthorizedCollectionActions() map[string]*structpb.ListValue 
 func (x *Scope) GetStoragePolicyId() string {
 	if x != nil {
 		return x.StoragePolicyId
+	}
+	return ""
+}
+
+func (x *Scope) GetAliasSuffix() string {
+	if x != nil {
+		return x.AliasSuffix
 	}
 	return ""
 }
@@ -523,7 +532,7 @@ const file_controller_api_resources_scopes_v1_scope_proto_rawDesc = "" +
 	"\x04type\x18\x02 \x01(\tB\x04\xe2A\x01\x03R\x04type\x12\x18\n" +
 	"\x04name\x18\x03 \x01(\tB\x04\xe2A\x01\x03R\x04name\x12&\n" +
 	"\vdescription\x18\x04 \x01(\tB\x04\xe2A\x01\x03R\vdescription\x12.\n" +
-	"\x0fparent_scope_id\x18\x05 \x01(\tB\x04\xe2A\x01\x03R\x0fparent_scope_id\"\xea\a\n" +
+	"\x0fparent_scope_id\x18\x05 \x01(\tB\x04\xe2A\x01\x03R\x0fparent_scope_id\"\x95\b\n" +
 	"\x05Scope\x12\x14\n" +
 	"\x02id\x18\n" +
 	" \x01(\tB\x04\xe2A\x01\x03R\x02id\x12\x1a\n" +
@@ -541,7 +550,8 @@ const file_controller_api_resources_scopes_v1_scope_proto_rawDesc = "" +
 	"\x16primary_auth_method_id\x12\x13PrimaryAuthMethodIdR\x16primary_auth_method_id\x125\n" +
 	"\x12authorized_actions\x18\xac\x02 \x03(\tB\x04\xe2A\x01\x03R\x12authorized_actions\x12\x97\x01\n" +
 	"\x1dauthorized_collection_actions\x18\xb6\x02 \x03(\v2J.controller.api.resources.scopes.v1.Scope.AuthorizedCollectionActionsEntryB\x04\xe2A\x01\x03R\x1dauthorized_collection_actions\x123\n" +
-	"\x11storage_policy_id\x18\xc0\x02 \x01(\tB\x04\xe2A\x01\x03R\x11storage_policy_id\x1aj\n" +
+	"\x11storage_policy_id\x18\xc0\x02 \x01(\tB\x04\xe2A\x01\x03R\x11storage_policy_id\x12)\n" +
+	"\falias_suffix\x18\xca\x02 \x01(\tB\x04\xe2A\x01\x03R\falias_suffix\x1aj\n" +
 	" AuthorizedCollectionActionsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x120\n" +
 	"\x05value\x18\x02 \x01(\v2\x1a.google.protobuf.ListValueR\x05value:\x028\x01\"v\n" +

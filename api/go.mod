@@ -1,13 +1,13 @@
 module github.com/hashicorp/boundary/api
 
-go 1.26.5
+go 1.26.7
 
 require (
-	github.com/coder/websocket v1.8.14
+	github.com/coder/websocket v1.8.15
 	github.com/google/go-cmp v0.7.0
-	github.com/hashicorp/boundary/sdk v0.0.56
+	github.com/hashicorp/boundary/sdk v0.0.60
 	github.com/hashicorp/go-cleanhttp v0.5.2
-	github.com/hashicorp/go-kms-wrapping/v2 v2.0.20
+	github.com/hashicorp/go-kms-wrapping/v2 v2.0.23
 	github.com/hashicorp/go-retryablehttp v0.7.8
 	github.com/hashicorp/go-rootcerts v1.0.2
 	github.com/hashicorp/go-secure-stdlib/base62 v0.1.2
@@ -16,12 +16,12 @@ require (
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/mitchellh/mapstructure v1.5.0
-	github.com/mr-tron/base58 v1.2.0
+	github.com/mr-tron/base58 v1.3.0
 	github.com/stretchr/testify v1.11.1
 	go.uber.org/atomic v1.11.0
-	golang.org/x/time v0.14.0
-	google.golang.org/grpc v1.85.0-dev.0.20260825072537-93e31b48545e
-	google.golang.org/protobuf v1.36.12
+	golang.org/x/time v0.15.0
+	google.golang.org/grpc v1.83.2
+	google.golang.org/protobuf v1.36.11
 )
 
 require (
@@ -40,6 +40,6 @@ require (
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	golang.org/x/crypto v0.56.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20260817212433-ac3dfec99bb1 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20260526163538-3dc84a4a5aaa // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

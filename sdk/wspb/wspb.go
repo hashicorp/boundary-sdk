@@ -1,5 +1,5 @@
 // Copyright IBM Corp. 2020, 2026
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 
 // Package wspb provides convenience functions for reading and writing protobuf
 // messages via a websocket.

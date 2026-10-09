@@ -10,8 +10,8 @@
 package credentials
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	_ "google.golang.org/genproto/googleapis/api/visibility"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -673,7 +673,7 @@ const file_controller_api_resources_credentials_v1_credential_proto_rawDesc = ""
 	"\x11attributes.object\x12\x06ObjectR\x06object\x12J\n" +
 	"\vobject_hmac\x18\x14 \x01(\tB(\xc2\xdd)$\n" +
 	"\x16attributes.object_hmac\x12\n" +
-	"ObjectHmacR\vobject_hmacBXZVgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/credentials;credentialsb\x06proto3"
+	"ObjectHmacR\vobject_hmacB\\ZZgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/credentials;credentialsb\x06proto3"
 
 var (
 	file_controller_api_resources_credentials_v1_credential_proto_rawDescOnce sync.Once

@@ -10,8 +10,8 @@
 package managedgroups
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	_ "google.golang.org/genproto/googleapis/api/visibility"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -359,7 +359,7 @@ const file_controller_api_resources_managedgroups_v1_managed_group_proto_rawDesc
 	"\x1aLdapManagedGroupAttributes\x12N\n" +
 	"\vgroup_names\x18d \x03(\tB,\xa0\xda)\x01\xc2\xdd)$\n" +
 	"\x16attributes.group_names\x12\n" +
-	"GroupNamesR\vgroup_namesB\\ZZgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/managedgroups;managedgroupsb\x06proto3"
+	"GroupNamesR\vgroup_namesB`Z^github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/managedgroups;managedgroupsb\x06proto3"
 
 var (
 	file_controller_api_resources_managedgroups_v1_managed_group_proto_rawDescOnce sync.Once

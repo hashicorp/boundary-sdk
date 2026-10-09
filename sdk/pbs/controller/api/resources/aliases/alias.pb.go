@@ -11,8 +11,8 @@ package aliases
 
 import (
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	_ "google.golang.org/genproto/googleapis/api/visibility"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -363,7 +363,7 @@ const file_controller_api_resources_aliases_v1_alias_proto_rawDesc = "" +
 	"\x1bauthorize_session_arguments\x18\x01 \x01(\v2>.controller.api.resources.aliases.v1.AuthorizeSessionArgumentsR\x1bauthorize_session_arguments\"w\n" +
 	"\x19AuthorizeSessionArguments\x12Z\n" +
 	"\ahost_id\x18d \x01(\tB@\xa0\xda)\x01\xc2\xdd)8\n" +
-	".attributes.authorize_session_arguments.host_id\x12\x06HostIdR\ahost_idBPZNgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/aliases;aliasesb\x06proto3"
+	".attributes.authorize_session_arguments.host_id\x12\x06HostIdR\ahost_idBTZRgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/aliases;aliasesb\x06proto3"
 
 var (
 	file_controller_api_resources_aliases_v1_alias_proto_rawDescOnce sync.Once

@@ -10,8 +10,8 @@
 package users
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -288,7 +288,7 @@ const file_controller_api_resources_users_v1_user_proto_rawDesc = "" +
 	"login_name\x12\x1c\n" +
 	"\tfull_name\x18x \x01(\tR\tfull_name\x12\x15\n" +
 	"\x05email\x18\x82\x01 \x01(\tR\x05email\x12/\n" +
-	"\x12primary_account_id\x18\x8c\x01 \x01(\tR\x12primary_account_idBLZJgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/users;usersb\x06proto3"
+	"\x12primary_account_id\x18\x8c\x01 \x01(\tR\x12primary_account_idBPZNgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/users;usersb\x06proto3"
 
 var (
 	file_controller_api_resources_users_v1_user_proto_rawDescOnce sync.Once

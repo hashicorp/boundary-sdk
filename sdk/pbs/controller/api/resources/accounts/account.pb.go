@@ -11,8 +11,8 @@ package accounts
 
 import (
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	_ "google.golang.org/genproto/googleapis/api/visibility"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -571,7 +571,7 @@ const file_controller_api_resources_accounts_v1_account_proto_rawDesc = "" +
 	"\tfull_name\x18n \x01(\tB\x04\xe2A\x01\x03R\tfull_name\x12\x1a\n" +
 	"\x05email\x18x \x01(\tB\x04\xe2A\x01\x03R\x05email\x12\x15\n" +
 	"\x02dn\x18\x82\x01 \x01(\tB\x04\xe2A\x01\x03R\x02dn\x12/\n" +
-	"\x10member_of_groups\x18\x8c\x01 \x03(\tB\x04\xe2A\x01\x03R\x0ememberOfGroupsBRZPgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/accounts;accountsb\x06proto3"
+	"\x10member_of_groups\x18\x8c\x01 \x03(\tB\x04\xe2A\x01\x03R\x0ememberOfGroupsBVZTgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/accounts;accountsb\x06proto3"
 
 var (
 	file_controller_api_resources_accounts_v1_account_proto_rawDescOnce sync.Once

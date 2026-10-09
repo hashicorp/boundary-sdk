@@ -10,8 +10,8 @@
 package session_recordings
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	_ "google.golang.org/genproto/googleapis/api/visibility"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -3105,7 +3105,7 @@ const file_controller_api_resources_sessionrecordings_v1_session_recording_proto
 	"\fretain_until\x18\x14 \x01(\v2\x1a.google.protobuf.TimestampR\fretain_until\x12>\n" +
 	"\fdelete_after\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\fdelete_after\x12\"\n" +
 	"\favailability\x18\x16 \x01(\tR\favailability\x12g\n" +
-	"\x0frecording_state\x18\x17 \x01(\v2=.controller.api.resources.sessionrecordings.v1.RecordingStateR\x0frecording_stateBfZdgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/session_recordings;session_recordingsb\x06proto3"
+	"\x0frecording_state\x18\x17 \x01(\v2=.controller.api.resources.sessionrecordings.v1.RecordingStateR\x0frecording_stateBjZhgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/session_recordings;session_recordingsb\x06proto3"
 
 var (
 	file_controller_api_resources_sessionrecordings_v1_session_recording_proto_rawDescOnce sync.Once

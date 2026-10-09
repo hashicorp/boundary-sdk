@@ -98,7 +98,7 @@ const file_controller_api_resources_billing_v1_billing_proto_rawDesc = "" +
 	"\n" +
 	"start_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"start_time\x126\n" +
-	"\bend_time\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\bend_timeBPZNgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/billing;billingb\x06proto3"
+	"\bend_time\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\bend_timeBTZRgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/billing;billingb\x06proto3"
 
 var (
 	file_controller_api_resources_billing_v1_billing_proto_rawDescOnce sync.Once

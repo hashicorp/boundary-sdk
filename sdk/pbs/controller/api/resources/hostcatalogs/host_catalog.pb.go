@@ -10,9 +10,9 @@
 package hostcatalogs
 
 import (
-	plugins "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/plugins"
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	plugins "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/plugins"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
@@ -275,7 +275,7 @@ const file_controller_api_resources_hostcatalogs_v1_host_catalog_proto_rawDesc =
 	" AuthorizedCollectionActionsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x120\n" +
 	"\x05value\x18\x02 \x01(\v2\x1a.google.protobuf.ListValueR\x05value:\x028\x01B\a\n" +
-	"\x05attrsBZZXgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/hostcatalogs;hostcatalogsb\x06proto3"
+	"\x05attrsB^Z\\github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/hostcatalogs;hostcatalogsb\x06proto3"
 
 var (
 	file_controller_api_resources_hostcatalogs_v1_host_catalog_proto_rawDescOnce sync.Once

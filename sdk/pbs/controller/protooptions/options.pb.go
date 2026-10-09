@@ -322,7 +322,7 @@ const file_controller_custom_options_v1_options_proto_rawDesc = "" +
 	"\asubtype\x12\x1d.google.protobuf.FieldOptions\x18\xb3\x9c\x05 \x01(\tR\asubtype:K\n" +
 	"\x11subtype_source_id\x12\x1d.google.protobuf.FieldOptions\x18\xb4\x9c\x05 \x01(\bR\x0fsubtypeSourceId:f\n" +
 	"\taliasable\x12\x1d.google.protobuf.FieldOptions\x18\xb5\x9c\x05 \x01(\v2'.controller.custom_options.v1.AliasInfoR\taliasable:6\n" +
-	"\x06domain\x12\x1c.google.protobuf.FileOptions\x18\xb4\x9c\x05 \x01(\tR\x06domainBLZJgithub.com/hashicorp/boundary/sdk/pbs/controller/protooptions;protooptionsb\x06proto3"
+	"\x06domain\x12\x1c.google.protobuf.FileOptions\x18\xb4\x9c\x05 \x01(\tR\x06domainBPZNgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions;protooptionsb\x06proto3"
 
 var (
 	file_controller_custom_options_v1_options_proto_rawDescOnce sync.Once

@@ -10,8 +10,8 @@
 package credentialstores
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	_ "google.golang.org/genproto/googleapis/api/visibility"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -415,7 +415,7 @@ const file_controller_api_resources_credentialstores_v1_credential_store_proto_r
 	"\x1bclient_certificate_key_hmac\x18d \x01(\tR\x1bclient_certificate_key_hmac\x12t\n" +
 	"\rworker_filter\x18n \x01(\v2\x1c.google.protobuf.StringValueB0\xa0\xda)\x01\xc2\xdd)(\n" +
 	"\x18attributes.worker_filter\x12\fWorkerFilterR\rworker_filter\x12\"\n" +
-	"\ftoken_status\x18x \x01(\tR\ftoken_statusBbZ`github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/credentialstores;credentialstoresb\x06proto3"
+	"\ftoken_status\x18x \x01(\tR\ftoken_statusBfZdgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/credentialstores;credentialstoresb\x06proto3"
 
 var (
 	file_controller_api_resources_credentialstores_v1_credential_store_proto_rawDescOnce sync.Once

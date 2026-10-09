@@ -10,8 +10,8 @@
 package plugin
 
 import (
-	plugins "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/plugins"
-	storagebuckets "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/storagebuckets"
+	plugins "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/plugins"
+	storagebuckets "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/storagebuckets"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
@@ -1461,7 +1461,7 @@ const file_plugin_v1_storage_plugin_service_proto_rawDesc = "" +
 	"\tGetObject\x12\x1b.plugin.v1.GetObjectRequest\x1a\x1c.plugin.v1.GetObjectResponse0\x01\x12L\n" +
 	"\vListObjects\x12\x1d.plugin.v1.ListObjectsRequest\x1a\x1e.plugin.v1.ListObjectsResponse\x12F\n" +
 	"\tPutObject\x12\x1b.plugin.v1.PutObjectRequest\x1a\x1c.plugin.v1.PutObjectResponse\x12R\n" +
-	"\rDeleteObjects\x12\x1f.plugin.v1.DeleteObjectsRequest\x1a .plugin.v1.DeleteObjectsResponseB5Z3github.com/hashicorp/boundary/sdk/pbs/plugin;pluginb\x06proto3"
+	"\rDeleteObjects\x12\x1f.plugin.v1.DeleteObjectsRequest\x1a .plugin.v1.DeleteObjectsResponseB9Z7github.com/hashicorp/boundary-sdk/sdk/pbs/plugin;pluginb\x06proto3"
 
 var (
 	file_plugin_v1_storage_plugin_service_proto_rawDescOnce sync.Once

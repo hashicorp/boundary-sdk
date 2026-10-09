@@ -204,7 +204,7 @@ const file_worker_proxy_v1_proxy_proto_rawDesc = "" +
 	"\x10connections_left\x18\x1e \x01(\x05R\x0fconnectionsLeft*Y\n" +
 	"\x10HANDSHAKECOMMAND\x12 \n" +
 	"\x1cHANDSHAKECOMMAND_UNSPECIFIED\x10\x00\x12#\n" +
-	"\x1fHANDSHAKECOMMAND_SESSION_CANCEL\x10\x01B3Z1github.com/hashicorp/boundary/sdk/pbs/proxy;proxyb\x06proto3"
+	"\x1fHANDSHAKECOMMAND_SESSION_CANCEL\x10\x01B7Z5github.com/hashicorp/boundary-sdk/sdk/pbs/proxy;proxyb\x06proto3"
 
 var (
 	file_worker_proxy_v1_proxy_proto_rawDescOnce sync.Once

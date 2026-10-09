@@ -10,9 +10,9 @@
 package hostsets
 
 import (
-	plugins "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/plugins"
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	plugins "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/plugins"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
@@ -263,7 +263,7 @@ const file_controller_api_resources_hostsets_v1_host_set_proto_rawDesc = "" +
 	"attributes\x18n \x01(\v2\x17.google.protobuf.StructB\x0f\xa0\xda)\x01\x9a\xe3)\adefaultH\x00R\n" +
 	"attributes\x12/\n" +
 	"\x12authorized_actions\x18\xac\x02 \x03(\tR\x12authorized_actionsB\a\n" +
-	"\x05attrsBRZPgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/hostsets;hostsetsb\x06proto3"
+	"\x05attrsBVZTgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/hostsets;hostsetsb\x06proto3"
 
 var (
 	file_controller_api_resources_hostsets_v1_host_set_proto_rawDescOnce sync.Once

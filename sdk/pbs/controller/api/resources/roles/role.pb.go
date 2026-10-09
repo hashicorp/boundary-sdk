@@ -10,8 +10,8 @@
 package roles
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -437,7 +437,7 @@ const file_controller_api_resources_roles_v1_role_proto_rawDesc = "" +
 	"principals\x12$\n" +
 	"\rgrant_strings\x18x \x03(\tR\rgrant_strings\x12A\n" +
 	"\x06grants\x18\x82\x01 \x03(\v2(.controller.api.resources.roles.v1.GrantR\x06grants\x12/\n" +
-	"\x12authorized_actions\x18\xac\x02 \x03(\tR\x12authorized_actionsJ\x04\bZ\x10[R\x0egrant_scope_idBLZJgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/roles;rolesb\x06proto3"
+	"\x12authorized_actions\x18\xac\x02 \x03(\tR\x12authorized_actionsJ\x04\bZ\x10[R\x0egrant_scope_idBPZNgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/roles;rolesb\x06proto3"
 
 var (
 	file_controller_api_resources_roles_v1_role_proto_rawDescOnce sync.Once

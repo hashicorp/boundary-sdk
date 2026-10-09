@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"strings"
 
-	pb "github.com/hashicorp/boundary/sdk/pbs/plugin"
+	pb "github.com/hashicorp/boundary-sdk/sdk/pbs/plugin"
 	"github.com/hashicorp/go-plugin"
 	"github.com/hashicorp/go-secure-stdlib/pluginutil/v2"
 )

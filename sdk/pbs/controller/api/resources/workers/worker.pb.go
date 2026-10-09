@@ -10,8 +10,8 @@
 package workers
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
@@ -582,7 +582,7 @@ const file_controller_api_resources_workers_v1_worker_proto_rawDesc = "" +
 	"\x0enot_after_time\x18( \x01(\v2\x1a.google.protobuf.TimestampR\fnotAfterTime\"^\n" +
 	"\x14CertificateAuthority\x12F\n" +
 	"\x05certs\x18\n" +
-	" \x03(\v20.controller.api.resources.workers.v1.CertificateR\x05certsBPZNgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/workers;workersb\x06proto3"
+	" \x03(\v20.controller.api.resources.workers.v1.CertificateR\x05certsBTZRgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/workers;workersb\x06proto3"
 
 var (
 	file_controller_api_resources_workers_v1_worker_proto_rawDescOnce sync.Once

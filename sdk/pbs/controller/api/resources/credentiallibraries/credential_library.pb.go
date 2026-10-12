@@ -10,8 +10,8 @@
 package credentiallibraries
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	_ "google.golang.org/genproto/googleapis/api/visibility"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -576,7 +576,7 @@ const file_controller_api_resources_credentiallibraries_v1_credential_library_pr
 	"$VaultLdapCredentialLibraryAttributes\x12V\n" +
 	"\x04path\x18\n" +
 	" \x01(\v2\x1c.google.protobuf.StringValueB$\xa0\xda)\x01\xc2\xdd)\x1c\n" +
-	"\x0fattributes.path\x12\tVaultPathR\x04pathBhZfgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/credentiallibraries;credentiallibrariesb\x06proto3"
+	"\x0fattributes.path\x12\tVaultPathR\x04pathBlZjgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/credentiallibraries;credentiallibrariesb\x06proto3"
 
 var (
 	file_controller_api_resources_credentiallibraries_v1_credential_library_proto_rawDescOnce sync.Once

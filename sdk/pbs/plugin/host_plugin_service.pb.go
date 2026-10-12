@@ -10,9 +10,9 @@
 package plugin
 
 import (
-	hostcatalogs "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/hostcatalogs"
-	hostsets "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/hostsets"
-	plugins "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/plugins"
+	hostcatalogs "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/hostcatalogs"
+	hostsets "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/hostsets"
+	plugins "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/plugins"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
@@ -1214,7 +1214,7 @@ const file_plugin_v1_host_plugin_service_proto_rawDesc = "" +
 	"\vOnCreateSet\x12\x1d.plugin.v1.OnCreateSetRequest\x1a\x1e.plugin.v1.OnCreateSetResponse\x12L\n" +
 	"\vOnUpdateSet\x12\x1d.plugin.v1.OnUpdateSetRequest\x1a\x1e.plugin.v1.OnUpdateSetResponse\x12L\n" +
 	"\vOnDeleteSet\x12\x1d.plugin.v1.OnDeleteSetRequest\x1a\x1e.plugin.v1.OnDeleteSetResponse\x12F\n" +
-	"\tListHosts\x12\x1b.plugin.v1.ListHostsRequest\x1a\x1c.plugin.v1.ListHostsResponseB5Z3github.com/hashicorp/boundary/sdk/pbs/plugin;pluginb\x06proto3"
+	"\tListHosts\x12\x1b.plugin.v1.ListHostsRequest\x1a\x1c.plugin.v1.ListHostsResponseB9Z7github.com/hashicorp/boundary-sdk/sdk/pbs/plugin;pluginb\x06proto3"
 
 var (
 	file_plugin_v1_host_plugin_service_proto_rawDescOnce sync.Once

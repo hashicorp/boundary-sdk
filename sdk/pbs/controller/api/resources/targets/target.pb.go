@@ -10,8 +10,8 @@
 package targets
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	_ "google.golang.org/genproto/googleapis/api/visibility"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -1784,7 +1784,7 @@ const file_controller_api_resources_targets_v1_target_proto_rawDesc = "" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1f\n" +
 	"\vprivate_key\x18\x02 \x01(\tR\n" +
 	"privateKey\x124\n" +
-	"\x16private_key_passphrase\x18\x03 \x01(\tR\x14privateKeyPassphraseBPZNgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/targets;targetsb\x06proto3"
+	"\x16private_key_passphrase\x18\x03 \x01(\tR\x14privateKeyPassphraseBTZRgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/targets;targetsb\x06proto3"
 
 var (
 	file_controller_api_resources_targets_v1_target_proto_rawDescOnce sync.Once

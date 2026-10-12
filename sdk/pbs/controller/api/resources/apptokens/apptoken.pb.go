@@ -10,8 +10,8 @@
 package apptokens
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -364,7 +364,7 @@ const file_controller_api_resources_apptokens_v1_apptoken_proto_rawDesc = "" +
 	"\x14time_to_live_seconds\x18x \x01(\rR\x14time_to_live_seconds\x12\x17\n" +
 	"\x06status\x18\x82\x01 \x01(\tR\x06status\x12\\\n" +
 	"\vpermissions\x18\x8c\x01 \x03(\v29.controller.api.resources.apptokens.v1.AppTokenPermissionR\vpermissions\x12/\n" +
-	"\x12authorized_actions\x18\xac\x02 \x03(\tR\x12authorized_actionsBTZRgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/apptokens;apptokensb\x06proto3"
+	"\x12authorized_actions\x18\xac\x02 \x03(\tR\x12authorized_actionsBXZVgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/apptokens;apptokensb\x06proto3"
 
 var (
 	file_controller_api_resources_apptokens_v1_apptoken_proto_rawDescOnce sync.Once

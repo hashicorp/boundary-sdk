@@ -10,8 +10,8 @@
 package policies
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	_ "google.golang.org/genproto/googleapis/api/visibility"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -413,7 +413,7 @@ const file_controller_api_resources_policies_v1_policy_proto_rawDesc = "" +
 	" \x01(\x05B3\xc2\xdd)/\n" +
 	"\x1cattributes.delete_after.days\x12\x0fDeleteAfterDaysR\x04days\x12\x83\x01\n" +
 	"\voverridable\x18\x14 \x01(\v2\x1a.google.protobuf.BoolValueBE\xc2\xdd)A\n" +
-	"#attributes.delete_after.overridable\x12\x1aDeleteAfterDaysOverridableR\voverridableBRZPgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/policies;policiesb\x06proto3"
+	"#attributes.delete_after.overridable\x12\x1aDeleteAfterDaysOverridableR\voverridableBVZTgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/policies;policiesb\x06proto3"
 
 var (
 	file_controller_api_resources_policies_v1_policy_proto_rawDescOnce sync.Once

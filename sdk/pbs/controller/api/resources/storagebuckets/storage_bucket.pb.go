@@ -10,9 +10,9 @@
 package storagebuckets
 
 import (
-	plugins "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/plugins"
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	plugins "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/plugins"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
@@ -325,7 +325,7 @@ const file_controller_api_resources_storagebuckets_v1_storage_bucket_proto_rawDe
 	"\x12authorized_actions\x18\xac\x02 \x03(\tR\x12authorized_actions\"E\n" +
 	"\x16StorageBucketPersisted\x12+\n" +
 	"\x04data\x18\n" +
-	" \x01(\v2\x17.google.protobuf.StructR\x04dataB^Z\\github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/storagebuckets;storagebucketsb\x06proto3"
+	" \x01(\v2\x17.google.protobuf.StructR\x04dataBbZ`github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/storagebuckets;storagebucketsb\x06proto3"
 
 var (
 	file_controller_api_resources_storagebuckets_v1_storage_bucket_proto_rawDescOnce sync.Once

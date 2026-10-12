@@ -10,9 +10,9 @@
 package hosts
 
 import (
-	plugins "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/plugins"
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	plugins "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/plugins"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	_ "google.golang.org/genproto/googleapis/api/visibility"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -340,7 +340,7 @@ const file_controller_api_resources_hosts_v1_host_proto_rawDesc = "" +
 	"\x14StaticHostAttributes\x12]\n" +
 	"\aaddress\x18\n" +
 	" \x01(\v2\x1c.google.protobuf.StringValueB%\xa0\xda)\x01\xc2\xdd)\x1d\n" +
-	"\x12attributes.address\x12\aaddressR\aaddressBLZJgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/hosts;hostsb\x06proto3"
+	"\x12attributes.address\x12\aaddressR\aaddressBPZNgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/hosts;hostsb\x06proto3"
 
 var (
 	file_controller_api_resources_hosts_v1_host_proto_rawDescOnce sync.Once

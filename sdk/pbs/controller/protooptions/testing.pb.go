@@ -510,7 +510,7 @@ const file_controller_custom_options_v1_testing_proto_rawDesc = "" +
 	"\vextra_field\x18\x04 \x01(\tB\x1d\xc2\xdd)\x19\n" +
 	"\n" +
 	"ExtraField\x12\vfirst_fieldR\n" +
-	"extraFieldBLZJgithub.com/hashicorp/boundary/sdk/pbs/controller/protooptions;protooptionsb\x06proto3"
+	"extraFieldBPZNgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions;protooptionsb\x06proto3"
 
 var (
 	file_controller_custom_options_v1_testing_proto_rawDescOnce sync.Once

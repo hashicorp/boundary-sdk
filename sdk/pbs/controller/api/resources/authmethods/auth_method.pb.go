@@ -11,8 +11,8 @@ package authmethods
 
 import (
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	_ "google.golang.org/genproto/googleapis/api/visibility"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -1323,7 +1323,7 @@ const file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc = "
 	"\x11maximum_page_size\x18\xf0\x01 \x01(\rB7\xa0\xda)\x01\xc2\xdd)/\n" +
 	"\x1cattributes.maximum_page_size\x12\x0fMaximumPageSizeR\x11maximum_page_size\x12\x8d\x01\n" +
 	"\x13dereference_aliases\x18\xfa\x01 \x01(\v2\x1c.google.protobuf.StringValueB<\xa0\xda)\x01\xc2\xdd)4\n" +
-	"\x1eattributes.dereference_aliases\x12\x12DereferenceAliasesR\x13dereference_aliasesB`\xa2\xe3)\x04authZVgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/authmethods;authmethodsb\x06proto3"
+	"\x1eattributes.dereference_aliases\x12\x12DereferenceAliasesR\x13dereference_aliasesBd\xa2\xe3)\x04authZZgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/authmethods;authmethodsb\x06proto3"
 
 var (
 	file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescOnce sync.Once

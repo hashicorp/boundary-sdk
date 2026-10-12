@@ -96,7 +96,7 @@ const file_controller_api_resources_plugins_v1_plugin_proto_rawDesc = "" +
 	"PluginInfo\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
-	"\vdescription\x18\x03 \x01(\tR\vdescriptionBPZNgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/plugins;pluginsb\x06proto3"
+	"\vdescription\x18\x03 \x01(\tR\vdescriptionBTZRgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/plugins;pluginsb\x06proto3"
 
 var (
 	file_controller_api_resources_plugins_v1_plugin_proto_rawDescOnce sync.Once

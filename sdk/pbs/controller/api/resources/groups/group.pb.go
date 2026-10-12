@@ -10,8 +10,8 @@
 package groups
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -244,7 +244,7 @@ const file_controller_api_resources_groups_v1_group_proto_rawDesc = "" +
 	"member_ids\x18Z \x03(\tR\n" +
 	"member_ids\x12D\n" +
 	"\amembers\x18d \x03(\v2*.controller.api.resources.groups.v1.MemberR\amembers\x12/\n" +
-	"\x12authorized_actions\x18\xac\x02 \x03(\tR\x12authorized_actionsBNZLgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/groups;groupsb\x06proto3"
+	"\x12authorized_actions\x18\xac\x02 \x03(\tR\x12authorized_actionsBRZPgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/groups;groupsb\x06proto3"
 
 var (
 	file_controller_api_resources_groups_v1_group_proto_rawDescOnce sync.Once

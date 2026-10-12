@@ -10,7 +10,7 @@
 package scopes
 
 import (
-	_ "github.com/hashicorp/boundary/sdk/pbs/controller/protooptions"
+	_ "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/protooptions"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -577,7 +577,7 @@ const file_controller_api_resources_scopes_v1_scope_proto_rawDesc = "" +
 	"\fcreated_time\x18( \x01(\v2\x1a.google.protobuf.TimestampR\fcreated_time\x12'\n" +
 	"\x0fcompleted_count\x182 \x01(\x03R\x0ecompletedCount\x12\x1f\n" +
 	"\vtotal_count\x18< \x01(\x03R\n" +
-	"totalCountBNZLgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes;scopesb\x06proto3"
+	"totalCountBRZPgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes;scopesb\x06proto3"
 
 var (
 	file_controller_api_resources_scopes_v1_scope_proto_rawDescOnce sync.Once

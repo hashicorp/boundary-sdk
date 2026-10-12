@@ -10,7 +10,7 @@
 package authtokens
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -191,7 +191,7 @@ const file_controller_api_resources_authtokens_v1_authtoken_proto_rawDesc = "" +
 	"\fupdated_time\x18Z \x01(\v2\x1a.google.protobuf.TimestampR\fupdated_time\x12Z\n" +
 	"\x1aapproximate_last_used_time\x18d \x01(\v2\x1a.google.protobuf.TimestampR\x1aapproximate_last_used_time\x12D\n" +
 	"\x0fexpiration_time\x18n \x01(\v2\x1a.google.protobuf.TimestampR\x0fexpiration_time\x12/\n" +
-	"\x12authorized_actions\x18\xac\x02 \x03(\tR\x12authorized_actionsBVZTgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/authtokens;authtokensb\x06proto3"
+	"\x12authorized_actions\x18\xac\x02 \x03(\tR\x12authorized_actionsBZZXgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/authtokens;authtokensb\x06proto3"
 
 var (
 	file_controller_api_resources_authtokens_v1_authtoken_proto_rawDescOnce sync.Once

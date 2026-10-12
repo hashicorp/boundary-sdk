@@ -10,7 +10,7 @@
 package sessions
 
 import (
-	scopes "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/scopes"
+	scopes "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/scopes"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -449,7 +449,7 @@ const file_controller_api_resources_sessions_v1_session_proto_rawDesc = "" +
 	"\vcertificate\x18\xc8\x01 \x01(\fR\vcertificate\x12/\n" +
 	"\x12termination_reason\x18\xd2\x01 \x01(\tR\x12termination_reason\x12/\n" +
 	"\x12authorized_actions\x18\xac\x02 \x03(\tR\x12authorized_actions\x12S\n" +
-	"\vconnections\x18\xb6\x02 \x03(\v20.controller.api.resources.sessions.v1.ConnectionR\vconnectionsR\vworker_infoBRZPgithub.com/hashicorp/boundary/sdk/pbs/controller/api/resources/sessions;sessionsb\x06proto3"
+	"\vconnections\x18\xb6\x02 \x03(\v20.controller.api.resources.sessions.v1.ConnectionR\vconnectionsR\vworker_infoBVZTgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/sessions;sessionsb\x06proto3"
 
 var (
 	file_controller_api_resources_sessions_v1_session_proto_rawDescOnce sync.Once

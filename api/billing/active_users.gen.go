@@ -7,7 +7,7 @@ package billing
 import (
 	"time"
 
-	"github.com/hashicorp/boundary/api"
+	"github.com/hashicorp/boundary-sdk/api"
 )
 
 type ActiveUsers struct {

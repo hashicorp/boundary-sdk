@@ -5,7 +5,7 @@
 package sessionrecordings
 
 import (
-	"github.com/hashicorp/boundary/api/scopes"
+	"github.com/hashicorp/boundary-sdk/api/scopes"
 )
 
 type HostCatalog struct {

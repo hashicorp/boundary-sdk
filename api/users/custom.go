@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/hashicorp/boundary/api/aliases"
+	"github.com/hashicorp/boundary-sdk/api/aliases"
 )
 
 // ListResolvableAliases builds and sends a request to the API for listing

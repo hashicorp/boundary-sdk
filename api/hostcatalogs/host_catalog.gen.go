@@ -14,9 +14,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/hashicorp/boundary/api"
-	"github.com/hashicorp/boundary/api/plugins"
-	"github.com/hashicorp/boundary/api/scopes"
+	"github.com/hashicorp/boundary-sdk/api"
+	"github.com/hashicorp/boundary-sdk/api/plugins"
+	"github.com/hashicorp/boundary-sdk/api/scopes"
 )
 
 type HostCatalog struct {

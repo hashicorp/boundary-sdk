@@ -10,9 +10,9 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/hashicorp/boundary/api"
-	"github.com/hashicorp/boundary/api/scopes"
-	targetspb "github.com/hashicorp/boundary/sdk/pbs/controller/api/resources/targets"
+	"github.com/hashicorp/boundary-sdk/api"
+	"github.com/hashicorp/boundary-sdk/api/scopes"
+	targetspb "github.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/targets"
 	"github.com/mr-tron/base58"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"

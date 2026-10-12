@@ -7,7 +7,7 @@ package sessionrecordings
 import (
 	"time"
 
-	"github.com/hashicorp/boundary/api"
+	"github.com/hashicorp/boundary-sdk/api"
 )
 
 type ConnectionRecording struct {

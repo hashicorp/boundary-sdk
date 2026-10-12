@@ -14,7 +14,7 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/hashicorp/boundary/api"
+	"github.com/hashicorp/boundary-sdk/api"
 )
 
 // Download makes a Boundary request to download the requested session recording

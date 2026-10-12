@@ -5,7 +5,7 @@
 package workers
 
 import (
-	"github.com/hashicorp/boundary/api"
+	"github.com/hashicorp/boundary-sdk/api"
 )
 
 type CertificateAuthority struct {

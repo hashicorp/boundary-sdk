@@ -11,8 +11,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/hashicorp/boundary/api"
-	"github.com/hashicorp/boundary/api/scopes"
+	"github.com/hashicorp/boundary-sdk/api"
+	"github.com/hashicorp/boundary-sdk/api/scopes"
 )
 
 type Worker struct {

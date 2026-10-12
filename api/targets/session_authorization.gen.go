@@ -7,7 +7,7 @@ package targets
 import (
 	"time"
 
-	"github.com/hashicorp/boundary/api/scopes"
+	"github.com/hashicorp/boundary-sdk/api/scopes"
 )
 
 type SessionAuthorization struct {

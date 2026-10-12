@@ -6,7 +6,7 @@ package proxy
 import (
 	"errors"
 
-	"github.com/hashicorp/boundary/api/targets"
+	"github.com/hashicorp/boundary-sdk/api/targets"
 	"github.com/mitchellh/mapstructure"
 )
 

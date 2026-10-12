@@ -9,8 +9,8 @@ import (
 	"net/netip"
 	"time"
 
-	"github.com/hashicorp/boundary/api"
-	"github.com/hashicorp/boundary/api/targets"
+	"github.com/hashicorp/boundary-sdk/api"
+	"github.com/hashicorp/boundary-sdk/api/targets"
 )
 
 // getOpts iterates the inbound Options and returns a struct and any errors

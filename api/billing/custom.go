@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/hashicorp/boundary/api"
+	"github.com/hashicorp/boundary-sdk/api"
 )
 
 type MonthlyActiveUsersResult struct {

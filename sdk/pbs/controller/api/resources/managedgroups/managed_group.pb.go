@@ -234,9 +234,11 @@ func (*ManagedGroup_LdapManagedGroupAttributes) isManagedGroup_Attrs() {}
 type OidcManagedGroupAttributes struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The boolean expression filter to use to determine membership.
-	Filter        string `protobuf:"bytes,10,opt,name=filter,proto3" json:"filter,omitempty" class:"public"` // @gotags: `class:"public"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Filter string `protobuf:"bytes,10,opt,name=filter,proto3" json:"filter,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Whether strict filter evaluation is disabled. Defaults to false on creation.
+	DisableStrictFilterEvaluation *wrapperspb.BoolValue `protobuf:"bytes,20,opt,name=disable_strict_filter_evaluation,proto3" json:"disable_strict_filter_evaluation,omitempty" class:"public"` // @gotags: `class:"public"`
+	unknownFields                 protoimpl.UnknownFields
+	sizeCache                     protoimpl.SizeCache
 }
 
 func (x *OidcManagedGroupAttributes) Reset() {
@@ -274,6 +276,13 @@ func (x *OidcManagedGroupAttributes) GetFilter() string {
 		return x.Filter
 	}
 	return ""
+}
+
+func (x *OidcManagedGroupAttributes) GetDisableStrictFilterEvaluation() *wrapperspb.BoolValue {
+	if x != nil {
+		return x.DisableStrictFilterEvaluation
+	}
+	return nil
 }
 
 // Attributes associated only with ManagedGroups with type "ldap".
@@ -351,11 +360,13 @@ const file_controller_api_resources_managedgroups_v1_managed_group_proto_rawDesc
 	"member_ids\x18n \x03(\tR\n" +
 	"member_ids\x12/\n" +
 	"\x12authorized_actions\x18\xac\x02 \x03(\tR\x12authorized_actionsB\a\n" +
-	"\x05attrs\"Y\n" +
+	"\x05attrs\"\x98\x02\n" +
 	"\x1aOidcManagedGroupAttributes\x12;\n" +
 	"\x06filter\x18\n" +
 	" \x01(\tB#\xa0\xda)\x01\xc2\xdd)\x1b\n" +
-	"\x11attributes.filter\x12\x06FilterR\x06filter\"l\n" +
+	"\x11attributes.filter\x12\x06FilterR\x06filter\x12\xbc\x01\n" +
+	" disable_strict_filter_evaluation\x18\x14 \x01(\v2\x1a.google.protobuf.BoolValueBT\xa0\xda)\x01\xc2\xdd)L\n" +
+	"+attributes.disable_strict_filter_evaluation\x12\x1dDisableStrictFilterEvaluationR disable_strict_filter_evaluation\"l\n" +
 	"\x1aLdapManagedGroupAttributes\x12N\n" +
 	"\vgroup_names\x18d \x03(\tB,\xa0\xda)\x01\xc2\xdd)$\n" +
 	"\x16attributes.group_names\x12\n" +
@@ -382,6 +393,7 @@ var file_controller_api_resources_managedgroups_v1_managed_group_proto_goTypes =
 	(*wrapperspb.StringValue)(nil),     // 4: google.protobuf.StringValue
 	(*timestamppb.Timestamp)(nil),      // 5: google.protobuf.Timestamp
 	(*structpb.Struct)(nil),            // 6: google.protobuf.Struct
+	(*wrapperspb.BoolValue)(nil),       // 7: google.protobuf.BoolValue
 }
 var file_controller_api_resources_managedgroups_v1_managed_group_proto_depIdxs = []int32{
 	3, // 0: controller.api.resources.managedgroups.v1.ManagedGroup.scope:type_name -> controller.api.resources.scopes.v1.ScopeInfo
@@ -392,11 +404,12 @@ var file_controller_api_resources_managedgroups_v1_managed_group_proto_depIdxs =
 	6, // 5: controller.api.resources.managedgroups.v1.ManagedGroup.attributes:type_name -> google.protobuf.Struct
 	1, // 6: controller.api.resources.managedgroups.v1.ManagedGroup.oidc_managed_group_attributes:type_name -> controller.api.resources.managedgroups.v1.OidcManagedGroupAttributes
 	2, // 7: controller.api.resources.managedgroups.v1.ManagedGroup.ldap_managed_group_attributes:type_name -> controller.api.resources.managedgroups.v1.LdapManagedGroupAttributes
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	7, // 8: controller.api.resources.managedgroups.v1.OidcManagedGroupAttributes.disable_strict_filter_evaluation:type_name -> google.protobuf.BoolValue
+	9, // [9:9] is the sub-list for method output_type
+	9, // [9:9] is the sub-list for method input_type
+	9, // [9:9] is the sub-list for extension type_name
+	9, // [9:9] is the sub-list for extension extendee
+	0, // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_controller_api_resources_managedgroups_v1_managed_group_proto_init() }

@@ -56,6 +56,8 @@ type ClientProxy struct {
 	started               *atomic.Bool
 	skipSessionTeardown   bool
 	closeReason           *atomic.Value
+	connOwnershipCheck    connOwnershipCheckFunc
+	connRejectedFn        connRejectedFunc
 }
 
 // New creates a new client proxy. The given context should be cancelable; once
@@ -105,6 +107,8 @@ func New(ctx context.Context, authzToken string, opt ...Option) (*ClientProxy, e
 		skipSessionTeardown:   opts.WithSkipSessionTeardown,
 		apiClient:             opts.withApiClient,
 		closeReason:           new(atomic.Value),
+		connOwnershipCheck:    opts.withConnOwnershipCheck,
+		connRejectedFn:        opts.withConnRejectedFn,
 	}
 
 	if opts.WithListener != nil {
@@ -266,6 +270,12 @@ func (p *ClientProxy) Start(opt ...Option) (retErr error) {
 					return
 				}
 			}
+
+			if !p.allowConn(listeningConn) {
+				listeningConn.Close()
+				continue
+			}
+
 			activeConnFn(1)
 			p.connWg.Add(1)
 			go func() {
@@ -396,6 +406,23 @@ func (p *ClientProxy) Start(opt ...Option) (retErr error) {
 	}
 
 	return p.CloseSession(opts.withSessionTeardownTimeout)
+}
+
+// allowConn checks whether an accepted connection should be proxied.
+// If connOwnershipCheck is not set, then all the connections are allowed.
+// if ownership check is rejected, notify using connRejectedFn and returns false.
+func (p *ClientProxy) allowConn(conn net.Conn) bool {
+	if p.connOwnershipCheck == nil {
+		return true
+	}
+	allowed, err := p.connOwnershipCheck(conn)
+	if err != nil || !allowed {
+		if p.connRejectedFn != nil {
+			p.connRejectedFn(conn.LocalAddr(), conn.RemoteAddr(), err)
+		}
+		return false
+	}
+	return true
 }
 
 // CloseSession attempts to close the currently proxied session by sending a

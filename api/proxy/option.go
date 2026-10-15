@@ -40,11 +40,21 @@ type Options struct {
 	withSessionTeardownTimeout   time.Duration
 	withApiClient                *api.Client
 	withInactivityTimeout        time.Duration
+	withConnOwnershipCheck       connOwnershipCheckFunc
+	withConnRejectedFn           connRejectedFunc
 }
 
 // Option is a function that takes in an options struct and sets values or
 // returns an error
 type Option func(*Options) error
+
+// connOwnershipCheckFunc is the function type used to validate an accepted
+// connection.
+type connOwnershipCheckFunc func(net.Conn) (bool, error)
+
+// connRejectedFunc is invoked when an accepted connection is rejected by the
+// ownership check.
+type connRejectedFunc func(localAddr, peerAddr net.Addr, err error)
 
 func getDefaultOptions() *Options {
 	return &Options{
@@ -149,6 +159,25 @@ func WithApiClient(with *api.Client) Option {
 func WithInactivityTimeout(with time.Duration) Option {
 	return func(o *Options) error {
 		o.withInactivityTimeout = with
+		return nil
+	}
+}
+
+// WithConnOwnershipCheck sets a function that validates the accepted connection ownership.
+// It returns true to allow the connection, false or an error to close it.
+// If not set, all connections are allowed.
+func WithConnOwnershipCheck(fn connOwnershipCheckFunc) Option {
+	return func(o *Options) error {
+		o.withConnOwnershipCheck = fn
+		return nil
+	}
+}
+
+// WithConnRejectedFunc sets a callback function which will be invoked when an accepted
+// connection is rejected by the ownership check.
+func WithConnRejectedFunc(fn connRejectedFunc) Option {
+	return func(o *Options) error {
+		o.withConnRejectedFn = fn
 		return nil
 	}
 }

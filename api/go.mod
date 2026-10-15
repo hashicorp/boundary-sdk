@@ -5,7 +5,7 @@ go 1.26.7
 require (
 	github.com/coder/websocket v1.8.15
 	github.com/google/go-cmp v0.7.0
-	github.com/hashicorp/boundary-sdk/sdk v0.1.0
+	github.com/hashicorp/boundary-sdk/sdk v0.1.1
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/hashicorp/go-kms-wrapping/v2 v2.0.23
 	github.com/hashicorp/go-retryablehttp v0.7.8

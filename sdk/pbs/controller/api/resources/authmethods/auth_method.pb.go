@@ -380,9 +380,13 @@ type OidcAuthMethodAttributes struct {
 	// provider_type optionally identifies the OIDC provider.
 	// When set, it enables provider specific behavior during authentication.
 	// When unset, no provider specific behavior is applied.
-	ProviderType  *wrapperspb.StringValue `protobuf:"bytes,150,opt,name=provider_type,proto3" json:"provider_type,omitempty" class:"public"` // @gotags: `class:"public"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	ProviderType *wrapperspb.StringValue `protobuf:"bytes,150,opt,name=provider_type,proto3" json:"provider_type,omitempty" class:"public"` // @gotags: `class:"public"`
+	// allow_insecure_issuer must be set to true to create or update an auth method
+	// with a plaintext http issuer URL. It is only read from the request; it is
+	// not persisted or returned.
+	AllowInsecureIssuer bool `protobuf:"varint,160,opt,name=allow_insecure_issuer,proto3" json:"allow_insecure_issuer,omitempty" class:"public"` // @gotags: `class:"public"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *OidcAuthMethodAttributes) Reset() {
@@ -532,6 +536,13 @@ func (x *OidcAuthMethodAttributes) GetProviderType() *wrapperspb.StringValue {
 		return x.ProviderType
 	}
 	return nil
+}
+
+func (x *OidcAuthMethodAttributes) GetAllowInsecureIssuer() bool {
+	if x != nil {
+		return x.AllowInsecureIssuer
+	}
+	return false
 }
 
 // The structure of the OIDC authenticate start response, in the JSON object
@@ -1126,7 +1137,7 @@ var File_controller_api_resources_authmethods_v1_auth_method_proto protoreflect.
 
 const file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc = "" +
 	"\n" +
-	"9controller/api/resources/authmethods/v1/auth_method.proto\x12'controller.api.resources.authmethods.v1\x1a.controller/api/resources/scopes/v1/scope.proto\x1a*controller/custom_options/v1/options.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/visibility.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x89\x17\n" +
+	"9controller/api/resources/authmethods/v1/auth_method.proto\x12'controller.api.resources.authmethods.v1\x1a.controller/api/resources/scopes/v1/scope.proto\x1a*controller/custom_options/v1/options.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/visibility.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xcf\x17\n" +
 	"\n" +
 	"AuthMethod\x12\x14\n" +
 	"\x02id\x18\n" +
@@ -1140,9 +1151,9 @@ const file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc = "
 	"\fcreated_time\x18< \x01(\v2\x1a.google.protobuf.TimestampB\x04\xe2A\x01\x03R\fcreated_time\x12D\n" +
 	"\fupdated_time\x18F \x01(\v2\x1a.google.protobuf.TimestampB\x04\xe2A\x01\x03R\fupdated_time\x12\x18\n" +
 	"\aversion\x18P \x01(\rR\aversion\x12\x12\n" +
-	"\x04type\x18Z \x01(\tR\x04type\x12\xa4\f\n" +
+	"\x04type\x18Z \x01(\tR\x04type\x12\xea\f\n" +
 	"\n" +
-	"attributes\x18d \x01(\v2\x17.google.protobuf.StructB\xe8\v\x92A\xd5\v2\x98\vThe attributes that are applicable for the specific auth method type. The schema of this field depends on the type of the auth method that you create want to create.\n" +
+	"attributes\x18d \x01(\v2\x17.google.protobuf.StructB\xae\f\x92A\x9b\f2\xde\vThe attributes that are applicable for the specific auth method type. The schema of this field depends on the type of the auth method that you create want to create.\n" +
 	"For password auth methods, the parameters are:\n" +
 	"```json\n" +
 	"{\n" +
@@ -1164,7 +1175,9 @@ const file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc = "
 	"  \"claims_scopes\": [],\n" +
 	"  \"account_claim_maps\": [],\n" +
 	"  \"disable_discovered_config_validation\": false,\n" +
-	"  \"prompts\": []\n" +
+	"  \"prompts\": [],\n" +
+	"  \"provider_type\": \"provider_type\",\n" +
+	"  \"allow_insecure_issuer\": false\n" +
 	"}\n" +
 	"```\n" +
 	"For LDAP auth methods, the parameters are:\n" +
@@ -1216,7 +1229,7 @@ const file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc = "
 	" \x01(\rB>\xa0\xda)\x01\xc2\xdd)6\n" +
 	" attributes.min_login_name_length\x12\x12MinLoginNameLengthR\x15min_login_name_length\x12m\n" +
 	"\x13min_password_length\x18\x14 \x01(\rB;\xa0\xda)\x01\xc2\xdd)3\n" +
-	"\x1eattributes.min_password_length\x12\x11MinPasswordLengthR\x13min_password_length\"\xb5\v\n" +
+	"\x1eattributes.min_password_length\x12\x11MinPasswordLengthR\x13min_password_length\"\xf6\v\n" +
 	"\x18OidcAuthMethodAttributes\x12\x1a\n" +
 	"\x05state\x18\n" +
 	" \x01(\tB\x04\xe2A\x01\x03R\x05state\x12Y\n" +
@@ -1247,7 +1260,8 @@ const file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc = "
 	"\aprompts\x18\x8c\x01 \x03(\tB%\xa0\xda)\x01\xc2\xdd)\x1d\n" +
 	"\x12attributes.prompts\x12\aPromptsR\aprompts\x12u\n" +
 	"\rprovider_type\x18\x96\x01 \x01(\v2\x1c.google.protobuf.StringValueB0\xa0\xda)\x01\xc2\xdd)(\n" +
-	"\x18attributes.provider_type\x12\fProviderTypeR\rprovider_type\"a\n" +
+	"\x18attributes.provider_type\x12\fProviderTypeR\rprovider_type\x12?\n" +
+	"\x15allow_insecure_issuer\x18\xa0\x01 \x01(\bB\b\xe2A\x01\x04\xa0\xda)\x01R\x15allow_insecure_issuer\"a\n" +
 	"'OidcAuthMethodAuthenticateStartResponse\x12\x1a\n" +
 	"\bauth_url\x18\n" +
 	" \x01(\tR\bauth_url\x12\x1a\n" +

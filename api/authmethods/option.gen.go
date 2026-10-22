@@ -179,6 +179,30 @@ func DefaultOidcAuthMethodAccountClaimMaps() Option {
 	}
 }
 
+func WithOidcAuthMethodAllowInsecureIssuer(inAllowInsecureIssuer bool) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["allow_insecure_issuer"] = inAllowInsecureIssuer
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultOidcAuthMethodAllowInsecureIssuer() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["allow_insecure_issuer"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
 func WithOidcAuthMethodAllowedAudiences(inAllowedAudiences []string) Option {
 	return func(o *options) {
 		raw, ok := o.postMap["attributes"]

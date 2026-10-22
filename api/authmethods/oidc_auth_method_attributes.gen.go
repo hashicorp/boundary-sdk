@@ -28,6 +28,7 @@ type OidcAuthMethodAttributes struct {
 	DryRun                            bool     `json:"dry_run,omitempty"`
 	Prompts                           []string `json:"prompts,omitempty"`
 	ProviderType                      string   `json:"provider_type,omitempty"`
+	AllowInsecureIssuer               bool     `json:"allow_insecure_issuer,omitempty"`
 }
 
 func AttributesMapToOidcAuthMethodAttributes(in map[string]any) (*OidcAuthMethodAttributes, error) {

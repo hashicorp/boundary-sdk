@@ -96,8 +96,35 @@ type Worker struct {
 	// is actively using. The possible permission state types include: write, read, and delete. The possible
 	// permission state values include: unknown, error, and ok.
 	RemoteStorageState map[string]*RemoteStorageState `protobuf:"bytes,320,rep,name=remote_storage_state,proto3" json:"remote_storage_state,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" class:"public"` // @gotags: `class:"public"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	// Output only. The maximum count of file descriptors the process is permitted to open.
+	MaxIoCapacity *uint64 `protobuf:"varint,330,opt,name=max_io_capacity,proto3,oneof" json:"max_io_capacity,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Output only. The count of additional file descriptors that may be opened under the Boundary process.
+	AvailableIoCapacity *uint64 `protobuf:"varint,340,opt,name=available_io_capacity,proto3,oneof" json:"available_io_capacity,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Output only. The io_capacity_state will qualitatively indicate the worker's I/O capacity. It will also be used by the controller as a filter for worker selection.
+	// Possible values are:
+	// - Available: I/O capacity is at an acceptable level.
+	// - Low: the process is below the minimum threshold for available I/O operations.
+	// - CriticallyLow: the process is below the critical-minimum threshold for available I/O operations.
+	// - Exhausted: the process has no capacity for new I/O operations.
+	// - NotApplicable: the operating system doesn't use file descriptors.
+	// - Unknown: the worker started but hasn't reported to the controller, or an error occurred while pulling the metric.
+	IoCapacityState string `protobuf:"bytes,350,opt,name=io_capacity_state,proto3" json:"io_capacity_state,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Output only. The max of storage capacity of the worker.
+	MaxStorageCapacity *uint64 `protobuf:"varint,360,opt,name=max_storage_capacity,proto3,oneof" json:"max_storage_capacity,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Output only. The available of storage capacity of the worker.
+	AvailableStorageCapacity *uint64 `protobuf:"varint,370,opt,name=available_storage_capacity,proto3,oneof" json:"available_storage_capacity,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Output only. The health status of the worker.
+	// Possible values are:
+	// - Healthy: `local_storage_state` is in one of the states `{Available, LowStorage, NotConfigured}`
+	// and `io_capacity_state` is in one of these states `{Available, Low, NotApplicable}`
+	// and the last seen timeout is within 15 seconds.
+	// - Unhealthy: `local_storage_state` is in one of the states `{CriticallyLowStorage, OutOfStorage}`
+	// or `io_capacity_state` is in one of these states `{CriticallyLow, Exhausted}`
+	// or the last seen timeout is not within 7.5 seconds.
+	// - Unknown: `io_capacity_state` is `Unknown` or `local_storage_state` is `Unknown`.
+	HealthStatus  string `protobuf:"bytes,380,opt,name=health_status,proto3" json:"health_status,omitempty" class:"public"` // @gotags: `class:"public"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Worker) Reset() {
@@ -282,6 +309,48 @@ func (x *Worker) GetRemoteStorageState() map[string]*RemoteStorageState {
 		return x.RemoteStorageState
 	}
 	return nil
+}
+
+func (x *Worker) GetMaxIoCapacity() uint64 {
+	if x != nil && x.MaxIoCapacity != nil {
+		return *x.MaxIoCapacity
+	}
+	return 0
+}
+
+func (x *Worker) GetAvailableIoCapacity() uint64 {
+	if x != nil && x.AvailableIoCapacity != nil {
+		return *x.AvailableIoCapacity
+	}
+	return 0
+}
+
+func (x *Worker) GetIoCapacityState() string {
+	if x != nil {
+		return x.IoCapacityState
+	}
+	return ""
+}
+
+func (x *Worker) GetMaxStorageCapacity() uint64 {
+	if x != nil && x.MaxStorageCapacity != nil {
+		return *x.MaxStorageCapacity
+	}
+	return 0
+}
+
+func (x *Worker) GetAvailableStorageCapacity() uint64 {
+	if x != nil && x.AvailableStorageCapacity != nil {
+		return *x.AvailableStorageCapacity
+	}
+	return 0
+}
+
+func (x *Worker) GetHealthStatus() string {
+	if x != nil {
+		return x.HealthStatus
+	}
+	return ""
 }
 
 type RemoteStorageState struct {
@@ -526,7 +595,7 @@ var File_controller_api_resources_workers_v1_worker_proto protoreflect.FileDescr
 
 const file_controller_api_resources_workers_v1_worker_proto_rawDesc = "" +
 	"\n" +
-	"0controller/api/resources/workers/v1/worker.proto\x12#controller.api.resources.workers.v1\x1a.controller/api/resources/scopes/v1/scope.proto\x1a*controller/custom_options/v1/options.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\xf6\x0e\n" +
+	"0controller/api/resources/workers/v1/worker.proto\x12#controller.api.resources.workers.v1\x1a.controller/api/resources/scopes/v1/scope.proto\x1a*controller/custom_options/v1/options.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\x9e\x12\n" +
 	"\x06Worker\x12\x0e\n" +
 	"\x02id\x18\n" +
 	" \x01(\tR\x02id\x12\x1a\n" +
@@ -552,7 +621,13 @@ const file_controller_api_resources_workers_v1_worker_proto_rawDesc = "" +
 	"%directly_connected_downstream_workers\x18\xc8\x01 \x03(\tR%directly_connected_downstream_workers\x12/\n" +
 	"\x12authorized_actions\x18\xac\x02 \x03(\tR\x12authorized_actions\x121\n" +
 	"\x13local_storage_state\x18\xb6\x02 \x01(\tR\x13local_storage_state\x12x\n" +
-	"\x14remote_storage_state\x18\xc0\x02 \x03(\v2C.controller.api.resources.workers.v1.Worker.RemoteStorageStateEntryR\x14remote_storage_state\x1a\\\n" +
+	"\x14remote_storage_state\x18\xc0\x02 \x03(\v2C.controller.api.resources.workers.v1.Worker.RemoteStorageStateEntryR\x14remote_storage_state\x12.\n" +
+	"\x0fmax_io_capacity\x18\xca\x02 \x01(\x04H\x00R\x0fmax_io_capacity\x88\x01\x01\x12:\n" +
+	"\x15available_io_capacity\x18\xd4\x02 \x01(\x04H\x01R\x15available_io_capacity\x88\x01\x01\x12-\n" +
+	"\x11io_capacity_state\x18\xde\x02 \x01(\tR\x11io_capacity_state\x128\n" +
+	"\x14max_storage_capacity\x18\xe8\x02 \x01(\x04H\x02R\x14max_storage_capacity\x88\x01\x01\x12D\n" +
+	"\x1aavailable_storage_capacity\x18\xf2\x02 \x01(\x04H\x03R\x1aavailable_storage_capacity\x88\x01\x01\x12%\n" +
+	"\rhealth_status\x18\xfc\x02 \x01(\tR\rhealth_status\x1a\\\n" +
 	"\x12CanonicalTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x120\n" +
 	"\x05value\x18\x02 \x01(\v2\x1a.google.protobuf.ListValueR\x05value:\x028\x01\x1aY\n" +
@@ -564,7 +639,11 @@ const file_controller_api_resources_workers_v1_worker_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\v2\x1a.google.protobuf.ListValueR\x05value:\x028\x01\x1a~\n" +
 	"\x17RemoteStorageStateEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12M\n" +
-	"\x05value\x18\x02 \x01(\v27.controller.api.resources.workers.v1.RemoteStorageStateR\x05value:\x028\x01\"\x8d\x01\n" +
+	"\x05value\x18\x02 \x01(\v27.controller.api.resources.workers.v1.RemoteStorageStateR\x05value:\x028\x01B\x12\n" +
+	"\x10_max_io_capacityB\x18\n" +
+	"\x16_available_io_capacityB\x17\n" +
+	"\x15_max_storage_capacityB\x1d\n" +
+	"\x1b_available_storage_capacity\"\x8d\x01\n" +
 	"\x12RemoteStorageState\x12\x16\n" +
 	"\x06status\x18\n" +
 	" \x01(\tR\x06status\x12_\n" +
@@ -647,6 +726,7 @@ func file_controller_api_resources_workers_v1_worker_proto_init() {
 	if File_controller_api_resources_workers_v1_worker_proto != nil {
 		return
 	}
+	file_controller_api_resources_workers_v1_worker_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

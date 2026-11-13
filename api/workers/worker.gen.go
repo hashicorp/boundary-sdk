@@ -38,6 +38,12 @@ type Worker struct {
 	AuthorizedActions                  []string                      `json:"authorized_actions,omitempty"`
 	LocalStorageState                  string                        `json:"local_storage_state,omitempty"`
 	RemoteStorageState                 map[string]RemoteStorageState `json:"remote_storage_state,omitempty"`
+	MaxIoCapacity                      *uint64                       `json:"max_io_capacity,string,omitempty"`
+	AvailableIoCapacity                *uint64                       `json:"available_io_capacity,string,omitempty"`
+	IoCapacityState                    string                        `json:"io_capacity_state,omitempty"`
+	MaxStorageCapacity                 *uint64                       `json:"max_storage_capacity,string,omitempty"`
+	AvailableStorageCapacity           *uint64                       `json:"available_storage_capacity,string,omitempty"`
+	HealthStatus                       string                        `json:"health_status,omitempty"`
 }
 
 type WorkerReadResult struct {

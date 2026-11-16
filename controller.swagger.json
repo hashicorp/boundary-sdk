@@ -9436,6 +9436,40 @@
           },
           "description": "Output only. The remote_storage_state indicats the permission state of the storage buckets that the Worker\nis actively using. The possible permission state types include: write, read, and delete. The possible\npermission state values include: unknown, error, and ok.",
           "readOnly": true
+        },
+        "max_io_capacity": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Output only. The maximum count of file descriptors the process is permitted to open.",
+          "readOnly": true
+        },
+        "available_io_capacity": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Output only. The count of additional file descriptors that may be opened under the Boundary process.",
+          "readOnly": true
+        },
+        "io_capacity_state": {
+          "type": "string",
+          "description": "Output only. The io_capacity_state will qualitatively indicate the worker's I/O capacity. It will also be used by the controller as a filter for worker selection.\nPossible values are:\n- Available: I/O capacity is at an acceptable level.\n- Low: the process is below the minimum threshold for available I/O operations.\n- CriticallyLow: the process is below the critical-minimum threshold for available I/O operations.\n- Exhausted: the process has no capacity for new I/O operations.\n- NotApplicable: the operating system doesn't use file descriptors.\n- Unknown: the worker started but hasn't reported to the controller, or an error occurred while pulling the metric.",
+          "readOnly": true
+        },
+        "max_storage_capacity": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Output only. The max of storage capacity of the worker.",
+          "readOnly": true
+        },
+        "available_storage_capacity": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Output only. The available of storage capacity of the worker.",
+          "readOnly": true
+        },
+        "health_status": {
+          "type": "string",
+          "description": "Output only. The health status of the worker.\nPossible values are:\n- Healthy: `local_storage_state` is in one of the states `{Available, LowStorage, NotConfigured}`\nand `io_capacity_state` is in one of these states `{Available, Low, NotApplicable}`\nand the last seen timeout is within 15 seconds.\n- Unhealthy: `local_storage_state` is in one of the states `{CriticallyLowStorage, OutOfStorage}`\nor `io_capacity_state` is in one of these states `{CriticallyLow, Exhausted}`\nor the last seen timeout is not within 7.5 seconds.\n- Unknown: `io_capacity_state` is `Unknown` or `local_storage_state` is `Unknown`.",
+          "readOnly": true
         }
       },
       "title": "Worker contains all fields related to a Worker resource"

@@ -251,6 +251,30 @@ func DefaultPasswordAccountPassword() Option {
 	}
 }
 
+func WithJwtAccountSubject(inSubject string) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["subject"] = inSubject
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultJwtAccountSubject() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["subject"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
 func WithOidcAccountSubject(inSubject string) Option {
 	return func(o *options) {
 		raw, ok := o.postMap["attributes"]

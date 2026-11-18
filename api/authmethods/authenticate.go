@@ -91,13 +91,19 @@ func (c *Client) Authenticate(ctx context.Context, authMethodId, command string,
 		return nil, fmt.Errorf("empty command passed into Authenticate request")
 	}
 
-	_, apiOpts := getOpts(opt...)
+	opts, apiOpts := getOpts(opt...)
 
 	reqBody := map[string]any{
 		"command": command,
 	}
 	if attributes != nil {
 		reqBody["attributes"] = attributes
+	}
+	if supports, ok := opts.postMap["supports_loopback"]; ok {
+		reqBody["supports_loopback"] = supports
+	}
+	if port, ok := opts.postMap["loopback_port_override"]; ok {
+		reqBody["loopback_port_override"] = port
 	}
 
 	req, err := c.client.NewRequest(ctx, "POST", fmt.Sprintf("auth-methods/%s:authenticate", authMethodId), reqBody, apiOpts...)

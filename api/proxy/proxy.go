@@ -28,10 +28,15 @@ import (
 // internal/tests but those cannot be included in this package as they would
 // create a dependency on the main module from this module.
 
-// This can take more time than you might expect, especially if a lot of these
-// are sent at once, so the timeout is quite long. We could allow a custom
-// timeout to be an option if we wish.
-const sessionCancelTimeout = 30 * time.Second
+const (
+	// This can take more time than you might expect, especially if a lot of these
+	// are sent at once, so the timeout is quite long. We could allow a custom
+	// timeout to be an option if we wish.
+	sessionCancelTimeout = 30 * time.Second
+
+	// maxConcurrentConnChecks used to limit numbers of concurrent checks at a time.
+	maxConcurrentConnChecks = 4
+)
 
 type ClientProxy struct {
 	tofuToken             string
@@ -240,6 +245,7 @@ func (p *ClientProxy) Start(opt ...Option) (retErr error) {
 	}
 
 	fin := make(chan error, 10)
+	connCheckChan := make(chan struct{}, maxConcurrentConnChecks)
 	p.connWg.Add(1)
 	go func() {
 		defer p.connWg.Done()
@@ -271,14 +277,31 @@ func (p *ClientProxy) Start(opt ...Option) (retErr error) {
 				}
 			}
 
-			if !p.allowConn(listeningConn) {
-				listeningConn.Close()
-				continue
+			// This blocks the accept loop when maxConcurrentConnChecks checks are running.
+			if p.connOwnershipCheck != nil {
+				select {
+				case connCheckChan <- struct{}{}:
+				case <-p.ctx.Done():
+					listeningConn.Close()
+					return
+				}
 			}
 
-			activeConnFn(1)
 			p.connWg.Add(1)
 			go func() {
+				if p.connOwnershipCheck != nil {
+					allowed := p.allowConn(listeningConn)
+					<-connCheckChan
+					if !allowed || p.ctx.Err() != nil {
+						listeningConn.Close()
+						p.connWg.Done()
+						return
+					}
+				}
+
+				activeConnFn(1)
+				// Deferred calls run in reverse order: connWg.Done must run before
+				// activeConnFn(-1), which can block until the proxy context is canceled.
 				defer activeConnFn(-1)
 				defer listeningConn.Close()
 				defer p.connWg.Done()

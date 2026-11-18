@@ -341,6 +341,72 @@ func TestStart_RejectedConnDoesNotBreakAcceptLoop(t *testing.T) {
 	}
 }
 
+func TestStart_ConnChecksRunConcurrently(t *testing.T) {
+	t.Parallel()
+	require := require.New(t)
+
+	clientLn, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(err)
+	defer clientLn.Close()
+
+	const conns = 2
+	entered := make(chan struct{}, conns)
+	release := make(chan struct{})
+	checkOwnership := func(net.Conn) (bool, error) {
+		entered <- struct{}{}
+		<-release
+		return false, nil
+	}
+	var rejected atomic.Int32
+	rejectedFn := func(net.Addr, net.Addr, error) {
+		rejected.Add(1)
+	}
+
+	p, err := New(
+		context.Background(),
+		"",
+		WithSessionAuthorizationData(testSessionAuth(t)),
+		WithListener(clientLn),
+		WithConnOwnershipCheck(checkOwnership),
+		WithConnRejectedFunc(rejectedFn),
+		WithSkipSessionTeardown(true),
+	)
+	require.NoError(err)
+
+	startErrCh := make(chan error, 1)
+	go func() { startErrCh <- p.Start() }()
+	t.Cleanup(func() {
+		select {
+		case <-release:
+		default:
+			close(release)
+		}
+		p.cancel()
+		assert.NoError(t, <-startErrCh)
+	})
+
+	for range conns {
+		conn, err := net.Dial("tcp", clientLn.Addr().String())
+		require.NoError(err)
+		defer conn.Close()
+	}
+
+	// Both checks start while the first one is still blocked.
+	for range conns {
+		select {
+		case <-entered:
+		case <-time.After(5 * time.Second):
+			t.Fatal("timed out waiting for an ownership check to start: checks are not running concurrently")
+		}
+	}
+
+	close(release)
+	require.Eventually(func() bool {
+		return rejected.Load() == conns
+	}, 5*time.Second, 10*time.Millisecond)
+	require.Equal(int32(0), p.activeConns.Load())
+}
+
 func testSessionAuth(t *testing.T) *targets.SessionAuthorizationData {
 	sessionAuth := &targets.SessionAuthorizationData{
 		SessionId: "s_1234567890",

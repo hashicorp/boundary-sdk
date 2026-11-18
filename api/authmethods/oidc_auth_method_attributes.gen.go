@@ -29,6 +29,8 @@ type OidcAuthMethodAttributes struct {
 	Prompts                           []string `json:"prompts,omitempty"`
 	ProviderType                      string   `json:"provider_type,omitempty"`
 	AllowInsecureIssuer               bool     `json:"allow_insecure_issuer,omitempty"`
+	LoopbackListenerPort              uint32   `json:"loopback_listener_port,omitempty"`
+	InsecureControllerCallback        bool     `json:"insecure_controller_callback,omitempty"`
 }
 
 func AttributesMapToOidcAuthMethodAttributes(in map[string]any) (*OidcAuthMethodAttributes, error) {

@@ -5,6 +5,7 @@
 package authmethods
 
 type OidcAuthMethodAuthenticateStartResponse struct {
-	AuthUrl string `json:"auth_url,omitempty"`
-	TokenId string `json:"token_id,omitempty"`
+	AuthUrl               string `json:"auth_url,omitempty"`
+	TokenId               string `json:"token_id,omitempty"`
+	ControllerCallbackUrl string `json:"controller_callback_url,omitempty"`
 }

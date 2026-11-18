@@ -155,6 +155,30 @@ func DefaultLdapAuthMethodAccountAttributeMaps() Option {
 	}
 }
 
+func WithJwtAuthMethodAccountClaimMaps(inAccountClaimMaps []string) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["account_claim_maps"] = inAccountClaimMaps
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultJwtAuthMethodAccountClaimMaps() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["account_claim_maps"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
 func WithOidcAuthMethodAccountClaimMaps(inAccountClaimMaps []string) Option {
 	return func(o *options) {
 		raw, ok := o.postMap["attributes"]
@@ -199,6 +223,30 @@ func DefaultOidcAuthMethodAllowInsecureIssuer() Option {
 		}
 		val := raw.(map[string]any)
 		val["allow_insecure_issuer"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
+func WithJwtAuthMethodAllowedAudiences(inAllowedAudiences []string) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["allowed_audiences"] = inAllowedAudiences
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultJwtAuthMethodAllowedAudiences() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["allowed_audiences"] = nil
 		o.postMap["attributes"] = val
 	}
 }
@@ -479,6 +527,30 @@ func DefaultOidcAuthMethodClientSecret() Option {
 	}
 }
 
+func WithJwtAuthMethodClockSkewLeeway(inClockSkewLeeway *int32) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["clock_skew_leeway"] = inClockSkewLeeway
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultJwtAuthMethodClockSkewLeeway() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["clock_skew_leeway"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
 func WithLdapAuthMethodDereferenceAliases(inDereferenceAliases string) Option {
 	return func(o *options) {
 		raw, ok := o.postMap["attributes"]
@@ -563,6 +635,30 @@ func DefaultLdapAuthMethodDiscoverDn() Option {
 	}
 }
 
+func WithJwtAuthMethodDryRun(inDryRun bool) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["dry_run"] = inDryRun
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultJwtAuthMethodDryRun() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["dry_run"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
 func WithOidcAuthMethodDryRun(inDryRun bool) Option {
 	return func(o *options) {
 		raw, ok := o.postMap["attributes"]
@@ -607,6 +703,30 @@ func DefaultLdapAuthMethodEnableGroups() Option {
 		}
 		val := raw.(map[string]any)
 		val["enable_groups"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
+func WithJwtAuthMethodExpirationLeeway(inExpirationLeeway *int32) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["expiration_leeway"] = inExpirationLeeway
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultJwtAuthMethodExpirationLeeway() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["expiration_leeway"] = nil
 		o.postMap["attributes"] = val
 	}
 }
@@ -707,6 +827,30 @@ func DefaultOidcAuthMethodIdpCaCerts() Option {
 	}
 }
 
+func WithOidcAuthMethodInsecureControllerCallback(inInsecureControllerCallback bool) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["insecure_controller_callback"] = inInsecureControllerCallback
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultOidcAuthMethodInsecureControllerCallback() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["insecure_controller_callback"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
 func WithLdapAuthMethodInsecureTls(inInsecureTls bool) Option {
 	return func(o *options) {
 		raw, ok := o.postMap["attributes"]
@@ -727,6 +871,30 @@ func DefaultLdapAuthMethodInsecureTls() Option {
 		}
 		val := raw.(map[string]any)
 		val["insecure_tls"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
+func WithJwtAuthMethodIssuer(inIssuer string) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["issuer"] = inIssuer
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultJwtAuthMethodIssuer() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["issuer"] = nil
 		o.postMap["attributes"] = val
 	}
 }
@@ -752,6 +920,84 @@ func DefaultOidcAuthMethodIssuer() Option {
 		val := raw.(map[string]any)
 		val["issuer"] = nil
 		o.postMap["attributes"] = val
+	}
+}
+
+func WithJwtAuthMethodJwksJson(inJwksJson string) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["jwks_json"] = inJwksJson
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultJwtAuthMethodJwksJson() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["jwks_json"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
+func WithJwtAuthMethodJwksPairs(inJwksPairs []*JwtJwksPair) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["jwks_pairs"] = inJwksPairs
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultJwtAuthMethodJwksPairs() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["jwks_pairs"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
+func WithOidcAuthMethodLoopbackListenerPort(inLoopbackListenerPort uint32) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["loopback_listener_port"] = inLoopbackListenerPort
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultOidcAuthMethodLoopbackListenerPort() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["loopback_listener_port"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
+func WithLoopbackPortOverride(inLoopbackPortOverride uint32) Option {
+	return func(o *options) {
+		o.postMap["loopback_port_override"] = inLoopbackPortOverride
 	}
 }
 
@@ -863,6 +1109,54 @@ func DefaultName() Option {
 	}
 }
 
+func WithJwtAuthMethodNotBeforeLeeway(inNotBeforeLeeway *int32) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["not_before_leeway"] = inNotBeforeLeeway
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultJwtAuthMethodNotBeforeLeeway() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["not_before_leeway"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
+func WithJwtAuthMethodOidcDiscovery(inOidcDiscovery *JwtOidcDiscovery) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["oidc_discovery"] = inOidcDiscovery
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultJwtAuthMethodOidcDiscovery() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["oidc_discovery"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
 func WithOidcAuthMethodPrompts(inPrompts []string) Option {
 	return func(o *options) {
 		raw, ok := o.postMap["attributes"]
@@ -911,6 +1205,30 @@ func DefaultOidcAuthMethodProviderType() Option {
 	}
 }
 
+func WithJwtAuthMethodSigningAlgorithms(inSigningAlgorithms []string) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["signing_algorithms"] = inSigningAlgorithms
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultJwtAuthMethodSigningAlgorithms() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["signing_algorithms"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
 func WithOidcAuthMethodSigningAlgorithms(inSigningAlgorithms []string) Option {
 	return func(o *options) {
 		raw, ok := o.postMap["attributes"]
@@ -931,6 +1249,30 @@ func DefaultOidcAuthMethodSigningAlgorithms() Option {
 		}
 		val := raw.(map[string]any)
 		val["signing_algorithms"] = nil
+		o.postMap["attributes"] = val
+	}
+}
+
+func WithJwtAuthMethodSkipLiveKeyValidation(inSkipLiveKeyValidation bool) Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["skip_live_key_validation"] = inSkipLiveKeyValidation
+		o.postMap["attributes"] = val
+	}
+}
+
+func DefaultJwtAuthMethodSkipLiveKeyValidation() Option {
+	return func(o *options) {
+		raw, ok := o.postMap["attributes"]
+		if !ok {
+			raw = any(map[string]any{})
+		}
+		val := raw.(map[string]any)
+		val["skip_live_key_validation"] = nil
 		o.postMap["attributes"] = val
 	}
 }
@@ -980,6 +1322,12 @@ func DefaultLdapAuthMethodState() Option {
 		val := raw.(map[string]any)
 		val["state"] = nil
 		o.postMap["attributes"] = val
+	}
+}
+
+func WithSupportsLoopback(inSupportsLoopback bool) Option {
+	return func(o *options) {
+		o.postMap["supports_loopback"] = inSupportsLoopback
 	}
 }
 

@@ -61,6 +61,7 @@ type Account struct {
 	//	*Account_PasswordAccountAttributes
 	//	*Account_OidcAccountAttributes
 	//	*Account_LdapAccountAttributes
+	//	*Account_JwtAccountAttributes
 	Attrs isAccount_Attrs `protobuf_oneof:"attrs"`
 	// Indicates the IDs of the managed groups that currently contain this account
 	ManagedGroupIds []string `protobuf:"bytes,110,rep,name=managed_group_ids,proto3" json:"managed_group_ids,omitempty" class:"public" eventstream:"observation"` // @gotags: `class:"public" eventstream:"observation"`
@@ -206,6 +207,15 @@ func (x *Account) GetLdapAccountAttributes() *LdapAccountAttributes {
 	return nil
 }
 
+func (x *Account) GetJwtAccountAttributes() *JwtAccountAttributes {
+	if x != nil {
+		if x, ok := x.Attrs.(*Account_JwtAccountAttributes); ok {
+			return x.JwtAccountAttributes
+		}
+	}
+	return nil
+}
+
 func (x *Account) GetManagedGroupIds() []string {
 	if x != nil {
 		return x.ManagedGroupIds
@@ -241,6 +251,10 @@ type Account_LdapAccountAttributes struct {
 	LdapAccountAttributes *LdapAccountAttributes `protobuf:"bytes,103,opt,name=ldap_account_attributes,json=ldapAccountAttributes,proto3,oneof"`
 }
 
+type Account_JwtAccountAttributes struct {
+	JwtAccountAttributes *JwtAccountAttributes `protobuf:"bytes,104,opt,name=jwt_account_attributes,json=jwtAccountAttributes,proto3,oneof"`
+}
+
 func (*Account_Attributes) isAccount_Attrs() {}
 
 func (*Account_PasswordAccountAttributes) isAccount_Attrs() {}
@@ -248,6 +262,8 @@ func (*Account_PasswordAccountAttributes) isAccount_Attrs() {}
 func (*Account_OidcAccountAttributes) isAccount_Attrs() {}
 
 func (*Account_LdapAccountAttributes) isAccount_Attrs() {}
+
+func (*Account_JwtAccountAttributes) isAccount_Attrs() {}
 
 // Attributes associated only with accounts with type "password".
 type PasswordAccountAttributes struct {
@@ -490,11 +506,87 @@ func (x *LdapAccountAttributes) GetMemberOfGroups() []string {
 	return nil
 }
 
+// Attributes associated only with accounts with type "jwt".
+type JwtAccountAttributes struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// issuer is a case sensitive string that maps to the JWT iss claim.
+	// This value is immutable after creation time.
+	Issuer string `protobuf:"bytes,10,opt,name=issuer,proto3" json:"issuer,omitempty" class:"public"` // @gotags: `class:"public"`
+	// subject is a case sensitive string that maps to the JWT sub claim,
+	// or the claim mapped to sub by account_claim_maps.
+	// This value is immutable after creation time.
+	Subject string `protobuf:"bytes,20,opt,name=subject,proto3" json:"subject,omitempty" class:"public"` // @gotags: `class:"public"`
+	// A string that maps to the account_claim_maps target "name".
+	FullName string `protobuf:"bytes,30,opt,name=full_name,proto3" json:"full_name,omitempty" class:"public"` // @gotags: `class:"public"`
+	// A string that maps to the account_claim_maps target "email".
+	Email         string `protobuf:"bytes,40,opt,name=email,proto3" json:"email,omitempty" class:"public"` // @gotags: `class:"public"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JwtAccountAttributes) Reset() {
+	*x = JwtAccountAttributes{}
+	mi := &file_controller_api_resources_accounts_v1_account_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JwtAccountAttributes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JwtAccountAttributes) ProtoMessage() {}
+
+func (x *JwtAccountAttributes) ProtoReflect() protoreflect.Message {
+	mi := &file_controller_api_resources_accounts_v1_account_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JwtAccountAttributes.ProtoReflect.Descriptor instead.
+func (*JwtAccountAttributes) Descriptor() ([]byte, []int) {
+	return file_controller_api_resources_accounts_v1_account_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *JwtAccountAttributes) GetIssuer() string {
+	if x != nil {
+		return x.Issuer
+	}
+	return ""
+}
+
+func (x *JwtAccountAttributes) GetSubject() string {
+	if x != nil {
+		return x.Subject
+	}
+	return ""
+}
+
+func (x *JwtAccountAttributes) GetFullName() string {
+	if x != nil {
+		return x.FullName
+	}
+	return ""
+}
+
+func (x *JwtAccountAttributes) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
 var File_controller_api_resources_accounts_v1_account_proto protoreflect.FileDescriptor
 
 const file_controller_api_resources_accounts_v1_account_proto_rawDesc = "" +
 	"\n" +
-	"2controller/api/resources/accounts/v1/account.proto\x12$controller.api.resources.accounts.v1\x1a.controller/api/resources/scopes/v1/scope.proto\x1a*controller/custom_options/v1/options.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/visibility.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xd8\x0e\n" +
+	"2controller/api/resources/accounts/v1/account.proto\x12$controller.api.resources.accounts.v1\x1a.controller/api/resources/scopes/v1/scope.proto\x1a*controller/custom_options/v1/options.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/visibility.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x81\x11\n" +
 	"\aAccount\x12\x14\n" +
 	"\x02id\x18\n" +
 	" \x01(\tB\x04\xe2A\x01\x03R\x02id\x12I\n" +
@@ -507,9 +599,9 @@ const file_controller_api_resources_accounts_v1_account_proto_rawDesc = "" +
 	"\fupdated_time\x18< \x01(\v2\x1a.google.protobuf.TimestampB\x04\xe2A\x01\x03R\fupdated_time\x12\x18\n" +
 	"\aversion\x18F \x01(\rR\aversion\x12\x12\n" +
 	"\x04type\x18P \x01(\tR\x04type\x12,\n" +
-	"\x0eauth_method_id\x18Z \x01(\tB\x04\xa0\xe3)\x01R\x0eauth_method_id\x12\x91\x06\n" +
+	"\x0eauth_method_id\x18Z \x01(\tB\x04\xa0\xe3)\x01R\x0eauth_method_id\x12\xa8\a\n" +
 	"\n" +
-	"attributes\x18d \x01(\v2\x17.google.protobuf.StructB\xd5\x05\x92A\xc2\x052\xa1\x05The attributes that are applicable for the specific account type. The schema of this field depends on the type of the auth method that you create the account in.\n" +
+	"attributes\x18d \x01(\v2\x17.google.protobuf.StructB\xec\x06\x92A\xd9\x062\xb8\x06The attributes that are applicable for the specific account type. The schema of this field depends on the type of the auth method that you create the account in.\n" +
 	"For password auth methods, the parameters are:\n" +
 	"```json\n" +
 	"{\n" +
@@ -538,6 +630,15 @@ const file_controller_api_resources_accounts_v1_account_proto_rawDesc = "" +
 	"  \"member_of_groups\": [\"member_of_groups\"]\n" +
 	"}\n" +
 	"```\n" +
+	"For JWT auth methods, the attributes are:\n" +
+	"```json\n" +
+	"{\n" +
+	"  \"issuer\": \"issuer\",\n" +
+	"  \"subject\": \"subject\",\n" +
+	"  \"full_name\": \"full_name\",\n" +
+	"  \"email\": \"email\"\n" +
+	"}\n" +
+	"```\n" +
 	"J\x1c{\"login_name\": \"login_name\"}\xa0\xda)\x01\x9a\xe3)\adefaultH\x00R\n" +
 	"attributes\x12\xa3\x01\n" +
 	"\x1bpassword_account_attributes\x18e \x01(\v2?.controller.api.resources.accounts.v1.PasswordAccountAttributesB \xa0\xda)\x01\x9a\xe3)\bpassword\xfa\xd2\xe4\x93\x02\n" +
@@ -545,7 +646,9 @@ const file_controller_api_resources_accounts_v1_account_proto_rawDesc = "" +
 	"\x17oidc_account_attributes\x18f \x01(\v2;.controller.api.resources.accounts.v1.OidcAccountAttributesB\x1c\xa0\xda)\x01\x9a\xe3)\x04oidc\xfa\xd2\xe4\x93\x02\n" +
 	"\x12\bINTERNALH\x00R\x15oidcAccountAttributes\x12\x93\x01\n" +
 	"\x17ldap_account_attributes\x18g \x01(\v2;.controller.api.resources.accounts.v1.LdapAccountAttributesB\x1c\xa0\xda)\x01\x9a\xe3)\x04ldap\xfa\xd2\xe4\x93\x02\n" +
-	"\x12\bINTERNALH\x00R\x15ldapAccountAttributes\x122\n" +
+	"\x12\bINTERNALH\x00R\x15ldapAccountAttributes\x12\x8f\x01\n" +
+	"\x16jwt_account_attributes\x18h \x01(\v2:.controller.api.resources.accounts.v1.JwtAccountAttributesB\x1b\xa0\xda)\x01\x9a\xe3)\x03jwt\xfa\xd2\xe4\x93\x02\n" +
+	"\x12\bINTERNALH\x00R\x14jwtAccountAttributes\x122\n" +
 	"\x11managed_group_ids\x18n \x03(\tB\x04\xe2A\x01\x03R\x11managed_group_ids\x125\n" +
 	"\x12authorized_actions\x18\xac\x02 \x03(\tB\x04\xe2A\x01\x03R\x12authorized_actionsB\a\n" +
 	"\x05attrs\"\xa7\x01\n" +
@@ -571,7 +674,13 @@ const file_controller_api_resources_accounts_v1_account_proto_rawDesc = "" +
 	"\tfull_name\x18n \x01(\tB\x04\xe2A\x01\x03R\tfull_name\x12\x1a\n" +
 	"\x05email\x18x \x01(\tB\x04\xe2A\x01\x03R\x05email\x12\x15\n" +
 	"\x02dn\x18\x82\x01 \x01(\tB\x04\xe2A\x01\x03R\x02dn\x12/\n" +
-	"\x10member_of_groups\x18\x8c\x01 \x03(\tB\x04\xe2A\x01\x03R\x0ememberOfGroupsBVZTgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/accounts;accountsb\x06proto3"
+	"\x10member_of_groups\x18\x8c\x01 \x03(\tB\x04\xe2A\x01\x03R\x0ememberOfGroups\"\x98\x01\n" +
+	"\x14JwtAccountAttributes\x12 \n" +
+	"\x06issuer\x18\n" +
+	" \x01(\tB\b\xe2A\x01\x03\xa0\xda)\x00R\x06issuer\x12\x1e\n" +
+	"\asubject\x18\x14 \x01(\tB\x04\xa0\xda)\x01R\asubject\x12\"\n" +
+	"\tfull_name\x18\x1e \x01(\tB\x04\xe2A\x01\x03R\tfull_name\x12\x1a\n" +
+	"\x05email\x18( \x01(\tB\x04\xe2A\x01\x03R\x05emailBVZTgithub.com/hashicorp/boundary-sdk/sdk/pbs/controller/api/resources/accounts;accountsb\x06proto3"
 
 var (
 	file_controller_api_resources_accounts_v1_account_proto_rawDescOnce sync.Once
@@ -585,35 +694,37 @@ func file_controller_api_resources_accounts_v1_account_proto_rawDescGZIP() []byt
 	return file_controller_api_resources_accounts_v1_account_proto_rawDescData
 }
 
-var file_controller_api_resources_accounts_v1_account_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_controller_api_resources_accounts_v1_account_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_controller_api_resources_accounts_v1_account_proto_goTypes = []any{
 	(*Account)(nil),                   // 0: controller.api.resources.accounts.v1.Account
 	(*PasswordAccountAttributes)(nil), // 1: controller.api.resources.accounts.v1.PasswordAccountAttributes
 	(*OidcAccountAttributes)(nil),     // 2: controller.api.resources.accounts.v1.OidcAccountAttributes
 	(*LdapAccountAttributes)(nil),     // 3: controller.api.resources.accounts.v1.LdapAccountAttributes
-	(*scopes.ScopeInfo)(nil),          // 4: controller.api.resources.scopes.v1.ScopeInfo
-	(*wrapperspb.StringValue)(nil),    // 5: google.protobuf.StringValue
-	(*timestamppb.Timestamp)(nil),     // 6: google.protobuf.Timestamp
-	(*structpb.Struct)(nil),           // 7: google.protobuf.Struct
+	(*JwtAccountAttributes)(nil),      // 4: controller.api.resources.accounts.v1.JwtAccountAttributes
+	(*scopes.ScopeInfo)(nil),          // 5: controller.api.resources.scopes.v1.ScopeInfo
+	(*wrapperspb.StringValue)(nil),    // 6: google.protobuf.StringValue
+	(*timestamppb.Timestamp)(nil),     // 7: google.protobuf.Timestamp
+	(*structpb.Struct)(nil),           // 8: google.protobuf.Struct
 }
 var file_controller_api_resources_accounts_v1_account_proto_depIdxs = []int32{
-	4,  // 0: controller.api.resources.accounts.v1.Account.scope:type_name -> controller.api.resources.scopes.v1.ScopeInfo
-	5,  // 1: controller.api.resources.accounts.v1.Account.name:type_name -> google.protobuf.StringValue
-	5,  // 2: controller.api.resources.accounts.v1.Account.description:type_name -> google.protobuf.StringValue
-	6,  // 3: controller.api.resources.accounts.v1.Account.created_time:type_name -> google.protobuf.Timestamp
-	6,  // 4: controller.api.resources.accounts.v1.Account.updated_time:type_name -> google.protobuf.Timestamp
-	7,  // 5: controller.api.resources.accounts.v1.Account.attributes:type_name -> google.protobuf.Struct
+	5,  // 0: controller.api.resources.accounts.v1.Account.scope:type_name -> controller.api.resources.scopes.v1.ScopeInfo
+	6,  // 1: controller.api.resources.accounts.v1.Account.name:type_name -> google.protobuf.StringValue
+	6,  // 2: controller.api.resources.accounts.v1.Account.description:type_name -> google.protobuf.StringValue
+	7,  // 3: controller.api.resources.accounts.v1.Account.created_time:type_name -> google.protobuf.Timestamp
+	7,  // 4: controller.api.resources.accounts.v1.Account.updated_time:type_name -> google.protobuf.Timestamp
+	8,  // 5: controller.api.resources.accounts.v1.Account.attributes:type_name -> google.protobuf.Struct
 	1,  // 6: controller.api.resources.accounts.v1.Account.password_account_attributes:type_name -> controller.api.resources.accounts.v1.PasswordAccountAttributes
 	2,  // 7: controller.api.resources.accounts.v1.Account.oidc_account_attributes:type_name -> controller.api.resources.accounts.v1.OidcAccountAttributes
 	3,  // 8: controller.api.resources.accounts.v1.Account.ldap_account_attributes:type_name -> controller.api.resources.accounts.v1.LdapAccountAttributes
-	5,  // 9: controller.api.resources.accounts.v1.PasswordAccountAttributes.password:type_name -> google.protobuf.StringValue
-	7,  // 10: controller.api.resources.accounts.v1.OidcAccountAttributes.token_claims:type_name -> google.protobuf.Struct
-	7,  // 11: controller.api.resources.accounts.v1.OidcAccountAttributes.userinfo_claims:type_name -> google.protobuf.Struct
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	4,  // 9: controller.api.resources.accounts.v1.Account.jwt_account_attributes:type_name -> controller.api.resources.accounts.v1.JwtAccountAttributes
+	6,  // 10: controller.api.resources.accounts.v1.PasswordAccountAttributes.password:type_name -> google.protobuf.StringValue
+	8,  // 11: controller.api.resources.accounts.v1.OidcAccountAttributes.token_claims:type_name -> google.protobuf.Struct
+	8,  // 12: controller.api.resources.accounts.v1.OidcAccountAttributes.userinfo_claims:type_name -> google.protobuf.Struct
+	13, // [13:13] is the sub-list for method output_type
+	13, // [13:13] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_controller_api_resources_accounts_v1_account_proto_init() }
@@ -626,6 +737,7 @@ func file_controller_api_resources_accounts_v1_account_proto_init() {
 		(*Account_PasswordAccountAttributes)(nil),
 		(*Account_OidcAccountAttributes)(nil),
 		(*Account_LdapAccountAttributes)(nil),
+		(*Account_JwtAccountAttributes)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -633,7 +745,7 @@ func file_controller_api_resources_accounts_v1_account_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_controller_api_resources_accounts_v1_account_proto_rawDesc), len(file_controller_api_resources_accounts_v1_account_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

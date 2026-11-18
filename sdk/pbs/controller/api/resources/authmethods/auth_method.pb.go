@@ -61,6 +61,7 @@ type AuthMethod struct {
 	//	*AuthMethod_PasswordAuthMethodAttributes
 	//	*AuthMethod_OidcAuthMethodsAttributes
 	//	*AuthMethod_LdapAuthMethodsAttributes
+	//	*AuthMethod_JwtAuthMethodsAttributes
 	Attrs isAuthMethod_Attrs `protobuf_oneof:"attrs"`
 	// Whether this auth method is the primary auth method for it's scope.
 	// To change this value update the primary_auth_method_id field on the scope.
@@ -209,6 +210,15 @@ func (x *AuthMethod) GetLdapAuthMethodsAttributes() *LdapAuthMethodAttributes {
 	return nil
 }
 
+func (x *AuthMethod) GetJwtAuthMethodsAttributes() *JwtAuthMethodAttributes {
+	if x != nil {
+		if x, ok := x.Attrs.(*AuthMethod_JwtAuthMethodsAttributes); ok {
+			return x.JwtAuthMethodsAttributes
+		}
+	}
+	return nil
+}
+
 func (x *AuthMethod) GetIsPrimary() bool {
 	if x != nil {
 		return x.IsPrimary
@@ -251,6 +261,10 @@ type AuthMethod_LdapAuthMethodsAttributes struct {
 	LdapAuthMethodsAttributes *LdapAuthMethodAttributes `protobuf:"bytes,103,opt,name=ldap_auth_methods_attributes,json=ldapAuthMethodsAttributes,proto3,oneof"`
 }
 
+type AuthMethod_JwtAuthMethodsAttributes struct {
+	JwtAuthMethodsAttributes *JwtAuthMethodAttributes `protobuf:"bytes,104,opt,name=jwt_auth_methods_attributes,json=jwtAuthMethodsAttributes,proto3,oneof"`
+}
+
 func (*AuthMethod_Attributes) isAuthMethod_Attrs() {}
 
 func (*AuthMethod_PasswordAuthMethodAttributes) isAuthMethod_Attrs() {}
@@ -258,6 +272,8 @@ func (*AuthMethod_PasswordAuthMethodAttributes) isAuthMethod_Attrs() {}
 func (*AuthMethod_OidcAuthMethodsAttributes) isAuthMethod_Attrs() {}
 
 func (*AuthMethod_LdapAuthMethodsAttributes) isAuthMethod_Attrs() {}
+
+func (*AuthMethod_JwtAuthMethodsAttributes) isAuthMethod_Attrs() {}
 
 // The attributes of a password typed auth method.
 type PasswordAuthMethodAttributes struct {
@@ -385,8 +401,14 @@ type OidcAuthMethodAttributes struct {
 	// with a plaintext http issuer URL. It is only read from the request; it is
 	// not persisted or returned.
 	AllowInsecureIssuer bool `protobuf:"varint,160,opt,name=allow_insecure_issuer,proto3" json:"allow_insecure_issuer,omitempty" class:"public"` // @gotags: `class:"public"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	// loopback_listener_port optionally specifies the CLI listener port.
+	// When set, it must be between 1 and 65535.
+	// When unset or zero, the default port of 8250 is used.
+	LoopbackListenerPort *wrapperspb.UInt32Value `protobuf:"bytes,170,opt,name=loopback_listener_port,proto3" json:"loopback_listener_port,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Whether to use the controller callback without a CLI listener.
+	InsecureControllerCallback *wrapperspb.BoolValue `protobuf:"bytes,180,opt,name=insecure_controller_callback,proto3" json:"insecure_controller_callback,omitempty" class:"public"` // @gotags: `class:"public"`
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
 }
 
 func (x *OidcAuthMethodAttributes) Reset() {
@@ -545,20 +567,321 @@ func (x *OidcAuthMethodAttributes) GetAllowInsecureIssuer() bool {
 	return false
 }
 
+func (x *OidcAuthMethodAttributes) GetLoopbackListenerPort() *wrapperspb.UInt32Value {
+	if x != nil {
+		return x.LoopbackListenerPort
+	}
+	return nil
+}
+
+func (x *OidcAuthMethodAttributes) GetInsecureControllerCallback() *wrapperspb.BoolValue {
+	if x != nil {
+		return x.InsecureControllerCallback
+	}
+	return nil
+}
+
+// The attributes of a JWT typed auth method.
+type JwtAuthMethodAttributes struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The state of the auth method: inactive, active-private, or active-public.
+	State string `protobuf:"bytes,10,opt,name=state,proto3" json:"state,omitempty" class:"public"` // @gotags: `class:"public"`
+	// The case-sensitive issuer value that JWT "iss" claims must match.
+	// When OIDC discovery is configured, this must be an HTTPS URL and is also
+	// used as the base URL for discovery.
+	Issuer *wrapperspb.StringValue `protobuf:"bytes,20,opt,name=issuer,proto3" json:"issuer,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Select OIDC discovery as the source of signature-verification keys.
+	// An empty object uses the system certificate pool.
+	OidcDiscovery *JwtOidcDiscovery `protobuf:"bytes,30,opt,name=oidc_discovery,proto3" json:"oidc_discovery,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Static JWKS endpoints, tried in the order provided, from which Boundary
+	// retrieves JWT signature-verification keys.
+	JwksPairs []*JwtJwksPair `protobuf:"bytes,40,rep,name=jwks_pairs,proto3" json:"jwks_pairs,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Inline JWKS is intentionally an opaque string rather than a dedicated
+	// message so Boundary preserves the exact bytes used for validation,
+	// encrypted storage, and HMAC-based change detection.
+	JwksJson *wrapperspb.StringValue `protobuf:"bytes,50,opt,name=jwks_json,proto3" json:"jwks_json,omitempty" class:"secret"` // @gotags: `class:"secret"`
+	// The HMAC of the configured inline JWKS, returned instead of jwks_json so
+	// clients can detect configuration changes without exposing key material.
+	JwksJsonHmac string `protobuf:"bytes,60,opt,name=jwks_json_hmac,proto3" json:"jwks_json_hmac,omitempty" class:"public"` // @gotags: `class:"public"`
+	// The signing algorithms accepted for JWT signature verification.
+	// If empty, Boundary uses the supported default algorithm.
+	SigningAlgorithms []string `protobuf:"bytes,70,rep,name=signing_algorithms,proto3" json:"signing_algorithms,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Allowed values for the JWT "aud" claim. If empty, Runtime does not apply
+	// an audience requirement.
+	AllowedAudiences []string `protobuf:"bytes,80,rep,name=allowed_audiences,proto3" json:"allowed_audiences,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Optional claim maps from JWT claims to the standard account claims "sub",
+	// "name", and "email". Each entry uses "from=to" syntax.
+	AccountClaimMaps []string `protobuf:"bytes,90,rep,name=account_claim_maps,proto3" json:"account_claim_maps,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Clock-skew leeway in seconds. Null or omitted selects Runtime's default,
+	// zero disables this leeway, and negative values are invalid.
+	ClockSkewLeeway *wrapperspb.Int32Value `protobuf:"bytes,100,opt,name=clock_skew_leeway,proto3" json:"clock_skew_leeway,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Expiration leeway in seconds. Null or omitted selects Boundary's default,
+	// zero disables this leeway, and negative values are invalid..
+	ExpirationLeeway *wrapperspb.Int32Value `protobuf:"bytes,110,opt,name=expiration_leeway,proto3" json:"expiration_leeway,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Not-before leeway in seconds. Null or omitted selects Boundary's default,
+	// zero disables this leeway, and negative values are invalid.
+	NotBeforeLeeway *wrapperspb.Int32Value `protobuf:"bytes,120,opt,name=not_before_leeway,proto3" json:"not_before_leeway,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Skip live discovery and remote key validation for this update request.
+	// Local configuration and inline-key validation still apply. For safety,
+	// callers must set this value on each request that should bypass live
+	// validation; it is not persisted.
+	SkipLiveKeyValidation bool `protobuf:"varint,130,opt,name=skip_live_key_validation,proto3" json:"skip_live_key_validation,omitempty" class:"public"` // @gotags: `class:"public"`
+	// On update, validate and return the merged configuration without persisting
+	// changes. Performs local and live validation in every operational state,
+	// even when skip_live_key_validation is set.
+	DryRun        bool `protobuf:"varint,140,opt,name=dry_run,proto3" json:"dry_run,omitempty" class:"public"` // @gotags: `class:"public"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JwtAuthMethodAttributes) Reset() {
+	*x = JwtAuthMethodAttributes{}
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JwtAuthMethodAttributes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JwtAuthMethodAttributes) ProtoMessage() {}
+
+func (x *JwtAuthMethodAttributes) ProtoReflect() protoreflect.Message {
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JwtAuthMethodAttributes.ProtoReflect.Descriptor instead.
+func (*JwtAuthMethodAttributes) Descriptor() ([]byte, []int) {
+	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *JwtAuthMethodAttributes) GetState() string {
+	if x != nil {
+		return x.State
+	}
+	return ""
+}
+
+func (x *JwtAuthMethodAttributes) GetIssuer() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Issuer
+	}
+	return nil
+}
+
+func (x *JwtAuthMethodAttributes) GetOidcDiscovery() *JwtOidcDiscovery {
+	if x != nil {
+		return x.OidcDiscovery
+	}
+	return nil
+}
+
+func (x *JwtAuthMethodAttributes) GetJwksPairs() []*JwtJwksPair {
+	if x != nil {
+		return x.JwksPairs
+	}
+	return nil
+}
+
+func (x *JwtAuthMethodAttributes) GetJwksJson() *wrapperspb.StringValue {
+	if x != nil {
+		return x.JwksJson
+	}
+	return nil
+}
+
+func (x *JwtAuthMethodAttributes) GetJwksJsonHmac() string {
+	if x != nil {
+		return x.JwksJsonHmac
+	}
+	return ""
+}
+
+func (x *JwtAuthMethodAttributes) GetSigningAlgorithms() []string {
+	if x != nil {
+		return x.SigningAlgorithms
+	}
+	return nil
+}
+
+func (x *JwtAuthMethodAttributes) GetAllowedAudiences() []string {
+	if x != nil {
+		return x.AllowedAudiences
+	}
+	return nil
+}
+
+func (x *JwtAuthMethodAttributes) GetAccountClaimMaps() []string {
+	if x != nil {
+		return x.AccountClaimMaps
+	}
+	return nil
+}
+
+func (x *JwtAuthMethodAttributes) GetClockSkewLeeway() *wrapperspb.Int32Value {
+	if x != nil {
+		return x.ClockSkewLeeway
+	}
+	return nil
+}
+
+func (x *JwtAuthMethodAttributes) GetExpirationLeeway() *wrapperspb.Int32Value {
+	if x != nil {
+		return x.ExpirationLeeway
+	}
+	return nil
+}
+
+func (x *JwtAuthMethodAttributes) GetNotBeforeLeeway() *wrapperspb.Int32Value {
+	if x != nil {
+		return x.NotBeforeLeeway
+	}
+	return nil
+}
+
+func (x *JwtAuthMethodAttributes) GetSkipLiveKeyValidation() bool {
+	if x != nil {
+		return x.SkipLiveKeyValidation
+	}
+	return false
+}
+
+func (x *JwtAuthMethodAttributes) GetDryRun() bool {
+	if x != nil {
+		return x.DryRun
+	}
+	return false
+}
+
+// OIDC discovery configuration for a JWT auth method.
+type JwtOidcDiscovery struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Optional PEM-encoded X.509 CA certificate bundle used as trust anchors for
+	// both the discovery endpoint and its discovered JWKS endpoint. If omitted,
+	// Boundary uses the system certificate pool.
+	IssuerCaPem   *wrapperspb.StringValue `protobuf:"bytes,10,opt,name=issuer_ca_pem,proto3" json:"issuer_ca_pem,omitempty" class:"public"` // @gotags: `class:"public"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JwtOidcDiscovery) Reset() {
+	*x = JwtOidcDiscovery{}
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JwtOidcDiscovery) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JwtOidcDiscovery) ProtoMessage() {}
+
+func (x *JwtOidcDiscovery) ProtoReflect() protoreflect.Message {
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JwtOidcDiscovery.ProtoReflect.Descriptor instead.
+func (*JwtOidcDiscovery) Descriptor() ([]byte, []int) {
+	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *JwtOidcDiscovery) GetIssuerCaPem() *wrapperspb.StringValue {
+	if x != nil {
+		return x.IssuerCaPem
+	}
+	return nil
+}
+
+// A static JWKS endpoint and its optional TLS trust configuration.
+type JwtJwksPair struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The HTTPS URL from which Boundary retrieves a JSON Web Key Set.
+	JwksUrl *wrapperspb.StringValue `protobuf:"bytes,10,opt,name=jwks_url,proto3" json:"jwks_url,omitempty" class:"public"` // @gotags: `class:"public"`
+	// Optional PEM-encoded X.509 CA certificate bundle used as trust anchors for
+	// this JWKS endpoint. If omitted, Boundary uses the system certificate pool.
+	JwksCaPem     *wrapperspb.StringValue `protobuf:"bytes,20,opt,name=jwks_ca_pem,proto3" json:"jwks_ca_pem,omitempty" class:"public"` // @gotags: `class:"public"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JwtJwksPair) Reset() {
+	*x = JwtJwksPair{}
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JwtJwksPair) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JwtJwksPair) ProtoMessage() {}
+
+func (x *JwtJwksPair) ProtoReflect() protoreflect.Message {
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JwtJwksPair.ProtoReflect.Descriptor instead.
+func (*JwtJwksPair) Descriptor() ([]byte, []int) {
+	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *JwtJwksPair) GetJwksUrl() *wrapperspb.StringValue {
+	if x != nil {
+		return x.JwksUrl
+	}
+	return nil
+}
+
+func (x *JwtJwksPair) GetJwksCaPem() *wrapperspb.StringValue {
+	if x != nil {
+		return x.JwksCaPem
+	}
+	return nil
+}
+
 // The structure of the OIDC authenticate start response, in the JSON object
 type OidcAuthMethodAuthenticateStartResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The returned authentication URL
 	AuthUrl string `protobuf:"bytes,10,opt,name=auth_url,proto3" json:"auth_url,omitempty" class:"public"` // @gotags: `class:"public"`
 	// The returned token ID
-	TokenId       string `protobuf:"bytes,30,opt,name=token_id,proto3" json:"token_id,omitempty" class:"public"` // @gotags: `class:"public"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	TokenId string `protobuf:"bytes,30,opt,name=token_id,proto3" json:"token_id,omitempty" class:"public"` // @gotags: `class:"public"`
+	// The full controller callback URL.
+	ControllerCallbackUrl string `protobuf:"bytes,40,opt,name=controller_callback_url,proto3" json:"controller_callback_url,omitempty" class:"public"` // @gotags: `class:"public"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
 }
 
 func (x *OidcAuthMethodAuthenticateStartResponse) Reset() {
 	*x = OidcAuthMethodAuthenticateStartResponse{}
-	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[3]
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -570,7 +893,7 @@ func (x *OidcAuthMethodAuthenticateStartResponse) String() string {
 func (*OidcAuthMethodAuthenticateStartResponse) ProtoMessage() {}
 
 func (x *OidcAuthMethodAuthenticateStartResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[3]
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -583,7 +906,7 @@ func (x *OidcAuthMethodAuthenticateStartResponse) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use OidcAuthMethodAuthenticateStartResponse.ProtoReflect.Descriptor instead.
 func (*OidcAuthMethodAuthenticateStartResponse) Descriptor() ([]byte, []int) {
-	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{3}
+	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *OidcAuthMethodAuthenticateStartResponse) GetAuthUrl() string {
@@ -596,6 +919,13 @@ func (x *OidcAuthMethodAuthenticateStartResponse) GetAuthUrl() string {
 func (x *OidcAuthMethodAuthenticateStartResponse) GetTokenId() string {
 	if x != nil {
 		return x.TokenId
+	}
+	return ""
+}
+
+func (x *OidcAuthMethodAuthenticateStartResponse) GetControllerCallbackUrl() string {
+	if x != nil {
+		return x.ControllerCallbackUrl
 	}
 	return ""
 }
@@ -617,7 +947,7 @@ type OidcAuthMethodAuthenticateCallbackRequest struct {
 
 func (x *OidcAuthMethodAuthenticateCallbackRequest) Reset() {
 	*x = OidcAuthMethodAuthenticateCallbackRequest{}
-	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[4]
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -629,7 +959,7 @@ func (x *OidcAuthMethodAuthenticateCallbackRequest) String() string {
 func (*OidcAuthMethodAuthenticateCallbackRequest) ProtoMessage() {}
 
 func (x *OidcAuthMethodAuthenticateCallbackRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[4]
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -642,7 +972,7 @@ func (x *OidcAuthMethodAuthenticateCallbackRequest) ProtoReflect() protoreflect.
 
 // Deprecated: Use OidcAuthMethodAuthenticateCallbackRequest.ProtoReflect.Descriptor instead.
 func (*OidcAuthMethodAuthenticateCallbackRequest) Descriptor() ([]byte, []int) {
-	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{4}
+	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *OidcAuthMethodAuthenticateCallbackRequest) GetCode() string {
@@ -691,7 +1021,7 @@ type OidcAuthMethodAuthenticateCallbackResponse struct {
 
 func (x *OidcAuthMethodAuthenticateCallbackResponse) Reset() {
 	*x = OidcAuthMethodAuthenticateCallbackResponse{}
-	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[5]
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -703,7 +1033,7 @@ func (x *OidcAuthMethodAuthenticateCallbackResponse) String() string {
 func (*OidcAuthMethodAuthenticateCallbackResponse) ProtoMessage() {}
 
 func (x *OidcAuthMethodAuthenticateCallbackResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[5]
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -716,7 +1046,7 @@ func (x *OidcAuthMethodAuthenticateCallbackResponse) ProtoReflect() protoreflect
 
 // Deprecated: Use OidcAuthMethodAuthenticateCallbackResponse.ProtoReflect.Descriptor instead.
 func (*OidcAuthMethodAuthenticateCallbackResponse) Descriptor() ([]byte, []int) {
-	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{5}
+	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *OidcAuthMethodAuthenticateCallbackResponse) GetFinalRedirectUrl() string {
@@ -737,7 +1067,7 @@ type OidcAuthMethodAuthenticateTokenRequest struct {
 
 func (x *OidcAuthMethodAuthenticateTokenRequest) Reset() {
 	*x = OidcAuthMethodAuthenticateTokenRequest{}
-	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[6]
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -749,7 +1079,7 @@ func (x *OidcAuthMethodAuthenticateTokenRequest) String() string {
 func (*OidcAuthMethodAuthenticateTokenRequest) ProtoMessage() {}
 
 func (x *OidcAuthMethodAuthenticateTokenRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[6]
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -762,7 +1092,7 @@ func (x *OidcAuthMethodAuthenticateTokenRequest) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use OidcAuthMethodAuthenticateTokenRequest.ProtoReflect.Descriptor instead.
 func (*OidcAuthMethodAuthenticateTokenRequest) Descriptor() ([]byte, []int) {
-	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{6}
+	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *OidcAuthMethodAuthenticateTokenRequest) GetTokenId() string {
@@ -785,7 +1115,7 @@ type OidcAuthMethodAuthenticateTokenResponse struct {
 
 func (x *OidcAuthMethodAuthenticateTokenResponse) Reset() {
 	*x = OidcAuthMethodAuthenticateTokenResponse{}
-	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[7]
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -797,7 +1127,7 @@ func (x *OidcAuthMethodAuthenticateTokenResponse) String() string {
 func (*OidcAuthMethodAuthenticateTokenResponse) ProtoMessage() {}
 
 func (x *OidcAuthMethodAuthenticateTokenResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[7]
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -810,7 +1140,7 @@ func (x *OidcAuthMethodAuthenticateTokenResponse) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use OidcAuthMethodAuthenticateTokenResponse.ProtoReflect.Descriptor instead.
 func (*OidcAuthMethodAuthenticateTokenResponse) Descriptor() ([]byte, []int) {
-	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{7}
+	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *OidcAuthMethodAuthenticateTokenResponse) GetStatus() string {
@@ -930,7 +1260,7 @@ type LdapAuthMethodAttributes struct {
 
 func (x *LdapAuthMethodAttributes) Reset() {
 	*x = LdapAuthMethodAttributes{}
-	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[8]
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -942,7 +1272,7 @@ func (x *LdapAuthMethodAttributes) String() string {
 func (*LdapAuthMethodAttributes) ProtoMessage() {}
 
 func (x *LdapAuthMethodAttributes) ProtoReflect() protoreflect.Message {
-	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[8]
+	mi := &file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -955,7 +1285,7 @@ func (x *LdapAuthMethodAttributes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LdapAuthMethodAttributes.ProtoReflect.Descriptor instead.
 func (*LdapAuthMethodAttributes) Descriptor() ([]byte, []int) {
-	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{8}
+	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *LdapAuthMethodAttributes) GetState() string {
@@ -1137,7 +1467,7 @@ var File_controller_api_resources_authmethods_v1_auth_method_proto protoreflect.
 
 const file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc = "" +
 	"\n" +
-	"9controller/api/resources/authmethods/v1/auth_method.proto\x12'controller.api.resources.authmethods.v1\x1a.controller/api/resources/scopes/v1/scope.proto\x1a*controller/custom_options/v1/options.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/visibility.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xcf\x17\n" +
+	"9controller/api/resources/authmethods/v1/auth_method.proto\x12'controller.api.resources.authmethods.v1\x1a.controller/api/resources/scopes/v1/scope.proto\x1a*controller/custom_options/v1/options.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/visibility.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xd5#\n" +
 	"\n" +
 	"AuthMethod\x12\x14\n" +
 	"\x02id\x18\n" +
@@ -1151,9 +1481,9 @@ const file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc = "
 	"\fcreated_time\x18< \x01(\v2\x1a.google.protobuf.TimestampB\x04\xe2A\x01\x03R\fcreated_time\x12D\n" +
 	"\fupdated_time\x18F \x01(\v2\x1a.google.protobuf.TimestampB\x04\xe2A\x01\x03R\fupdated_time\x12\x18\n" +
 	"\aversion\x18P \x01(\rR\aversion\x12\x12\n" +
-	"\x04type\x18Z \x01(\tR\x04type\x12\xea\f\n" +
+	"\x04type\x18Z \x01(\tR\x04type\x12\xcf\x17\n" +
 	"\n" +
-	"attributes\x18d \x01(\v2\x17.google.protobuf.StructB\xae\f\x92A\x9b\f2\xde\vThe attributes that are applicable for the specific auth method type. The schema of this field depends on the type of the auth method that you create want to create.\n" +
+	"attributes\x18d \x01(\v2\x17.google.protobuf.StructB\x93\x17\x92A\x80\x172\xc3\x16The attributes that are applicable for the specific auth method type. The schema of this field depends on the type of the auth method that you create want to create.\n" +
 	"For password auth methods, the parameters are:\n" +
 	"```json\n" +
 	"{\n" +
@@ -1177,7 +1507,9 @@ const file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc = "
 	"  \"disable_discovered_config_validation\": false,\n" +
 	"  \"prompts\": [],\n" +
 	"  \"provider_type\": \"provider_type\",\n" +
-	"  \"allow_insecure_issuer\": false\n" +
+	"  \"allow_insecure_issuer\": false,\n" +
+	"  \"loopback_listener_port\": 8250,\n" +
+	"  \"insecure_controller_callback\": false\n" +
 	"}\n" +
 	"```\n" +
 	"For LDAP auth methods, the parameters are:\n" +
@@ -1207,6 +1539,42 @@ const file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc = "
 	"  \"dereference_aliases\": \"never\"\n" +
 	"}\n" +
 	"```\n" +
+	"For JWT auth methods, exactly one of `oidc_discovery`, `jwks_pairs`, or `jwks_json` must be provided. OIDC discovery using the system certificate pool or an optional custom CA bundle:\n" +
+	"```json\n" +
+	"{\n" +
+	"  \"issuer\": \"https://issuer.example.com\",\n" +
+	"  \"oidc_discovery\": {\n" +
+	"    \"issuer_ca_pem\": \"-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----\"\n" +
+	"  },\n" +
+	"  \"allowed_audiences\": [],\n" +
+	"  \"account_claim_maps\": [],\n" +
+	"  \"signing_algorithms\": [],\n" +
+	"  \"clock_skew_leeway\": null,\n" +
+	"  \"expiration_leeway\": null,\n" +
+	"  \"not_before_leeway\": null\n" +
+	"}\n" +
+	"```\n" +
+	"Static JWKS endpoints, tried in the configured order, each with an optional custom CA bundle:\n" +
+	"```json\n" +
+	"{\n" +
+	"  \"issuer\": \"https://issuer.example.com\",\n" +
+	"  \"jwks_pairs\": [\n" +
+	"    {\n" +
+	"      \"jwks_url\": \"https://issuer.example.com/.well-known/jwks.json\",\n" +
+	"      \"jwks_ca_pem\": \"-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----\"\n" +
+	"    }\n" +
+	"  ]\n" +
+	"}\n" +
+	"```\n" +
+	"Inline JWKS key material:\n" +
+	"```json\n" +
+	"{\n" +
+	"  \"issuer\": \"https://issuer.example.com\",\n" +
+	"  \"jwks_json\": \"{\\\"keys\\\":[...]}\"\n" +
+	"}\n" +
+	"```\n" +
+	"`jwks_json` is input-only and is returned as `jwks_json_hmac` instead.\n" +
+	"On JWT updates, `dry_run` validates and returns the merged configuration without persisting it. It always performs live key validation. `skip_live_key_validation` skips remote key checks only for that update and is ignored by dry runs. Both flags are request-only.\n" +
 	"J8{\"min_login_name_length\": 10, \"min_password_length\": 16}\xa0\xda)\x01\x9a\xe3)\adefaultH\x00R\n" +
 	"attributes\x12\xb0\x01\n" +
 	"\x1fpassword_auth_method_attributes\x18e \x01(\v2E.controller.api.resources.authmethods.v1.PasswordAuthMethodAttributesB \xa0\xda)\x01\x9a\xe3)\bpassword\xfa\xd2\xe4\x93\x02\n" +
@@ -1214,7 +1582,9 @@ const file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc = "
 	"\x1coidc_auth_methods_attributes\x18f \x01(\v2A.controller.api.resources.authmethods.v1.OidcAuthMethodAttributesB\x1c\xa0\xda)\x01\x9a\xe3)\x04oidc\xfa\xd2\xe4\x93\x02\n" +
 	"\x12\bINTERNALH\x00R\x19oidcAuthMethodsAttributes\x12\xa2\x01\n" +
 	"\x1cldap_auth_methods_attributes\x18g \x01(\v2A.controller.api.resources.authmethods.v1.LdapAuthMethodAttributesB\x1c\xa0\xda)\x01\x9a\xe3)\x04ldap\xfa\xd2\xe4\x93\x02\n" +
-	"\x12\bINTERNALH\x00R\x19ldapAuthMethodsAttributes\x12$\n" +
+	"\x12\bINTERNALH\x00R\x19ldapAuthMethodsAttributes\x12\x9e\x01\n" +
+	"\x1bjwt_auth_methods_attributes\x18h \x01(\v2@.controller.api.resources.authmethods.v1.JwtAuthMethodAttributesB\x1b\xa0\xda)\x01\x9a\xe3)\x03jwt\xfa\xd2\xe4\x93\x02\n" +
+	"\x12\bINTERNALH\x00R\x18jwtAuthMethodsAttributes\x12$\n" +
 	"\n" +
 	"is_primary\x18n \x01(\bB\x04\xe2A\x01\x03R\n" +
 	"is_primary\x125\n" +
@@ -1229,7 +1599,7 @@ const file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc = "
 	" \x01(\rB>\xa0\xda)\x01\xc2\xdd)6\n" +
 	" attributes.min_login_name_length\x12\x12MinLoginNameLengthR\x15min_login_name_length\x12m\n" +
 	"\x13min_password_length\x18\x14 \x01(\rB;\xa0\xda)\x01\xc2\xdd)3\n" +
-	"\x1eattributes.min_password_length\x12\x11MinPasswordLengthR\x13min_password_length\"\xf6\v\n" +
+	"\x1eattributes.min_password_length\x12\x11MinPasswordLengthR\x13min_password_length\"\xc2\x0e\n" +
 	"\x18OidcAuthMethodAttributes\x12\x1a\n" +
 	"\x05state\x18\n" +
 	" \x01(\tB\x04\xe2A\x01\x03R\x05state\x12Y\n" +
@@ -1261,11 +1631,48 @@ const file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc = "
 	"\x12attributes.prompts\x12\aPromptsR\aprompts\x12u\n" +
 	"\rprovider_type\x18\x96\x01 \x01(\v2\x1c.google.protobuf.StringValueB0\xa0\xda)\x01\xc2\xdd)(\n" +
 	"\x18attributes.provider_type\x12\fProviderTypeR\rprovider_type\x12?\n" +
-	"\x15allow_insecure_issuer\x18\xa0\x01 \x01(\bB\b\xe2A\x01\x04\xa0\xda)\x01R\x15allow_insecure_issuer\"a\n" +
+	"\x15allow_insecure_issuer\x18\xa0\x01 \x01(\bB\b\xe2A\x01\x04\xa0\xda)\x01R\x15allow_insecure_issuer\x12\x98\x01\n" +
+	"\x16loopback_listener_port\x18\xaa\x01 \x01(\v2\x1c.google.protobuf.UInt32ValueBA\xa0\xda)\x01\xc2\xdd)9\n" +
+	"!attributes.loopback_listener_port\x12\x14LoopbackListenerPortR\x16loopback_listener_port\x12\xae\x01\n" +
+	"\x1cinsecure_controller_callback\x18\xb4\x01 \x01(\v2\x1a.google.protobuf.BoolValueBM\xa0\xda)\x01\xc2\xdd)E\n" +
+	"'attributes.insecure_controller_callback\x12\x1aInsecureControllerCallbackR\x1cinsecure_controller_callback\"\xf7\t\n" +
+	"\x17JwtAuthMethodAttributes\x12\x1a\n" +
+	"\x05state\x18\n" +
+	" \x01(\tB\x04\xe2A\x01\x03R\x05state\x12Y\n" +
+	"\x06issuer\x18\x14 \x01(\v2\x1c.google.protobuf.StringValueB#\xa0\xda)\x01\xc2\xdd)\x1b\n" +
+	"\x11attributes.issuer\x12\x06IssuerR\x06issuer\x12g\n" +
+	"\x0eoidc_discovery\x18\x1e \x01(\v29.controller.api.resources.authmethods.v1.JwtOidcDiscoveryB\x04\xa0\xda)\x01R\x0eoidc_discovery\x12Z\n" +
+	"\n" +
+	"jwks_pairs\x18( \x03(\v24.controller.api.resources.authmethods.v1.JwtJwksPairB\x04\xa0\xda)\x01R\n" +
+	"jwks_pairs\x12D\n" +
+	"\tjwks_json\x182 \x01(\v2\x1c.google.protobuf.StringValueB\b\xe2A\x01\x04\xa0\xda)\x01R\tjwks_json\x12,\n" +
+	"\x0ejwks_json_hmac\x18< \x01(\tB\x04\xe2A\x01\x03R\x0ejwks_json_hmac\x12d\n" +
+	"\x12signing_algorithms\x18F \x03(\tB4\xa0\xda)\x01\xc2\xdd),\n" +
+	"\x1dattributes.signing_algorithms\x12\vSigningAlgsR\x12signing_algorithms\x12_\n" +
+	"\x11allowed_audiences\x18P \x03(\tB1\xa0\xda)\x01\xc2\xdd))\n" +
+	"\x1cattributes.allowed_audiences\x12\tAudClaimsR\x11allowed_audiences\x12i\n" +
+	"\x12account_claim_maps\x18Z \x03(\tB9\xa0\xda)\x01\xc2\xdd)1\n" +
+	"\x1dattributes.account_claim_maps\x12\x10AccountClaimMapsR\x12account_claim_maps\x12\x82\x01\n" +
+	"\x11clock_skew_leeway\x18d \x01(\v2\x1b.google.protobuf.Int32ValueB7\xa0\xda)\x01\xc2\xdd)/\n" +
+	"\x1cattributes.clock_skew_leeway\x12\x0fClockSkewLeewayR\x11clock_skew_leeway\x12\x83\x01\n" +
+	"\x11expiration_leeway\x18n \x01(\v2\x1b.google.protobuf.Int32ValueB8\xa0\xda)\x01\xc2\xdd)0\n" +
+	"\x1cattributes.expiration_leeway\x12\x10ExpirationLeewayR\x11expiration_leeway\x12\x82\x01\n" +
+	"\x11not_before_leeway\x18x \x01(\v2\x1b.google.protobuf.Int32ValueB7\xa0\xda)\x01\xc2\xdd)/\n" +
+	"\x1cattributes.not_before_leeway\x12\x0fNotBeforeLeewayR\x11not_before_leeway\x12E\n" +
+	"\x18skip_live_key_validation\x18\x82\x01 \x01(\bB\b\xe2A\x01\x04\xa0\xda)\x01R\x18skip_live_key_validation\x12#\n" +
+	"\adry_run\x18\x8c\x01 \x01(\bB\b\xe2A\x01\x04\xa0\xda)\x01R\adry_run\"\\\n" +
+	"\x10JwtOidcDiscovery\x12H\n" +
+	"\rissuer_ca_pem\x18\n" +
+	" \x01(\v2\x1c.google.protobuf.StringValueB\x04\xa0\xda)\x01R\rissuer_ca_pem\"\x93\x01\n" +
+	"\vJwtJwksPair\x12>\n" +
+	"\bjwks_url\x18\n" +
+	" \x01(\v2\x1c.google.protobuf.StringValueB\x04\xa0\xda)\x01R\bjwks_url\x12D\n" +
+	"\vjwks_ca_pem\x18\x14 \x01(\v2\x1c.google.protobuf.StringValueB\x04\xa0\xda)\x01R\vjwks_ca_pem\"\x9b\x01\n" +
 	"'OidcAuthMethodAuthenticateStartResponse\x12\x1a\n" +
 	"\bauth_url\x18\n" +
 	" \x01(\tR\bauth_url\x12\x1a\n" +
-	"\btoken_id\x18\x1e \x01(\tR\btoken_id\"\xb7\x01\n" +
+	"\btoken_id\x18\x1e \x01(\tR\btoken_id\x128\n" +
+	"\x17controller_callback_url\x18( \x01(\tR\x17controller_callback_url\"\xb7\x01\n" +
 	")OidcAuthMethodAuthenticateCallbackRequest\x12\x12\n" +
 	"\x04code\x18\n" +
 	" \x01(\tR\x04code\x12\x14\n" +
@@ -1351,60 +1758,78 @@ func file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescGZIP(
 	return file_controller_api_resources_authmethods_v1_auth_method_proto_rawDescData
 }
 
-var file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_controller_api_resources_authmethods_v1_auth_method_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_controller_api_resources_authmethods_v1_auth_method_proto_goTypes = []any{
 	(*AuthMethod)(nil),                                 // 0: controller.api.resources.authmethods.v1.AuthMethod
 	(*PasswordAuthMethodAttributes)(nil),               // 1: controller.api.resources.authmethods.v1.PasswordAuthMethodAttributes
 	(*OidcAuthMethodAttributes)(nil),                   // 2: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes
-	(*OidcAuthMethodAuthenticateStartResponse)(nil),    // 3: controller.api.resources.authmethods.v1.OidcAuthMethodAuthenticateStartResponse
-	(*OidcAuthMethodAuthenticateCallbackRequest)(nil),  // 4: controller.api.resources.authmethods.v1.OidcAuthMethodAuthenticateCallbackRequest
-	(*OidcAuthMethodAuthenticateCallbackResponse)(nil), // 5: controller.api.resources.authmethods.v1.OidcAuthMethodAuthenticateCallbackResponse
-	(*OidcAuthMethodAuthenticateTokenRequest)(nil),     // 6: controller.api.resources.authmethods.v1.OidcAuthMethodAuthenticateTokenRequest
-	(*OidcAuthMethodAuthenticateTokenResponse)(nil),    // 7: controller.api.resources.authmethods.v1.OidcAuthMethodAuthenticateTokenResponse
-	(*LdapAuthMethodAttributes)(nil),                   // 8: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes
-	nil,                                                // 9: controller.api.resources.authmethods.v1.AuthMethod.AuthorizedCollectionActionsEntry
-	(*scopes.ScopeInfo)(nil),                           // 10: controller.api.resources.scopes.v1.ScopeInfo
-	(*wrapperspb.StringValue)(nil),                     // 11: google.protobuf.StringValue
-	(*timestamppb.Timestamp)(nil),                      // 12: google.protobuf.Timestamp
-	(*structpb.Struct)(nil),                            // 13: google.protobuf.Struct
-	(*wrapperspb.UInt32Value)(nil),                     // 14: google.protobuf.UInt32Value
-	(*structpb.ListValue)(nil),                         // 15: google.protobuf.ListValue
+	(*JwtAuthMethodAttributes)(nil),                    // 3: controller.api.resources.authmethods.v1.JwtAuthMethodAttributes
+	(*JwtOidcDiscovery)(nil),                           // 4: controller.api.resources.authmethods.v1.JwtOidcDiscovery
+	(*JwtJwksPair)(nil),                                // 5: controller.api.resources.authmethods.v1.JwtJwksPair
+	(*OidcAuthMethodAuthenticateStartResponse)(nil),    // 6: controller.api.resources.authmethods.v1.OidcAuthMethodAuthenticateStartResponse
+	(*OidcAuthMethodAuthenticateCallbackRequest)(nil),  // 7: controller.api.resources.authmethods.v1.OidcAuthMethodAuthenticateCallbackRequest
+	(*OidcAuthMethodAuthenticateCallbackResponse)(nil), // 8: controller.api.resources.authmethods.v1.OidcAuthMethodAuthenticateCallbackResponse
+	(*OidcAuthMethodAuthenticateTokenRequest)(nil),     // 9: controller.api.resources.authmethods.v1.OidcAuthMethodAuthenticateTokenRequest
+	(*OidcAuthMethodAuthenticateTokenResponse)(nil),    // 10: controller.api.resources.authmethods.v1.OidcAuthMethodAuthenticateTokenResponse
+	(*LdapAuthMethodAttributes)(nil),                   // 11: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes
+	nil,                                                // 12: controller.api.resources.authmethods.v1.AuthMethod.AuthorizedCollectionActionsEntry
+	(*scopes.ScopeInfo)(nil),                           // 13: controller.api.resources.scopes.v1.ScopeInfo
+	(*wrapperspb.StringValue)(nil),                     // 14: google.protobuf.StringValue
+	(*timestamppb.Timestamp)(nil),                      // 15: google.protobuf.Timestamp
+	(*structpb.Struct)(nil),                            // 16: google.protobuf.Struct
+	(*wrapperspb.UInt32Value)(nil),                     // 17: google.protobuf.UInt32Value
+	(*wrapperspb.BoolValue)(nil),                       // 18: google.protobuf.BoolValue
+	(*wrapperspb.Int32Value)(nil),                      // 19: google.protobuf.Int32Value
+	(*structpb.ListValue)(nil),                         // 20: google.protobuf.ListValue
 }
 var file_controller_api_resources_authmethods_v1_auth_method_proto_depIdxs = []int32{
-	10, // 0: controller.api.resources.authmethods.v1.AuthMethod.scope:type_name -> controller.api.resources.scopes.v1.ScopeInfo
-	11, // 1: controller.api.resources.authmethods.v1.AuthMethod.name:type_name -> google.protobuf.StringValue
-	11, // 2: controller.api.resources.authmethods.v1.AuthMethod.description:type_name -> google.protobuf.StringValue
-	12, // 3: controller.api.resources.authmethods.v1.AuthMethod.created_time:type_name -> google.protobuf.Timestamp
-	12, // 4: controller.api.resources.authmethods.v1.AuthMethod.updated_time:type_name -> google.protobuf.Timestamp
-	13, // 5: controller.api.resources.authmethods.v1.AuthMethod.attributes:type_name -> google.protobuf.Struct
+	13, // 0: controller.api.resources.authmethods.v1.AuthMethod.scope:type_name -> controller.api.resources.scopes.v1.ScopeInfo
+	14, // 1: controller.api.resources.authmethods.v1.AuthMethod.name:type_name -> google.protobuf.StringValue
+	14, // 2: controller.api.resources.authmethods.v1.AuthMethod.description:type_name -> google.protobuf.StringValue
+	15, // 3: controller.api.resources.authmethods.v1.AuthMethod.created_time:type_name -> google.protobuf.Timestamp
+	15, // 4: controller.api.resources.authmethods.v1.AuthMethod.updated_time:type_name -> google.protobuf.Timestamp
+	16, // 5: controller.api.resources.authmethods.v1.AuthMethod.attributes:type_name -> google.protobuf.Struct
 	1,  // 6: controller.api.resources.authmethods.v1.AuthMethod.password_auth_method_attributes:type_name -> controller.api.resources.authmethods.v1.PasswordAuthMethodAttributes
 	2,  // 7: controller.api.resources.authmethods.v1.AuthMethod.oidc_auth_methods_attributes:type_name -> controller.api.resources.authmethods.v1.OidcAuthMethodAttributes
-	8,  // 8: controller.api.resources.authmethods.v1.AuthMethod.ldap_auth_methods_attributes:type_name -> controller.api.resources.authmethods.v1.LdapAuthMethodAttributes
-	9,  // 9: controller.api.resources.authmethods.v1.AuthMethod.authorized_collection_actions:type_name -> controller.api.resources.authmethods.v1.AuthMethod.AuthorizedCollectionActionsEntry
-	11, // 10: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.issuer:type_name -> google.protobuf.StringValue
-	11, // 11: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.client_id:type_name -> google.protobuf.StringValue
-	11, // 12: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.client_secret:type_name -> google.protobuf.StringValue
-	14, // 13: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.max_age:type_name -> google.protobuf.UInt32Value
-	11, // 14: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.api_url_prefix:type_name -> google.protobuf.StringValue
-	11, // 15: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.provider_type:type_name -> google.protobuf.StringValue
-	11, // 16: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.upn_domain:type_name -> google.protobuf.StringValue
-	11, // 17: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.user_dn:type_name -> google.protobuf.StringValue
-	11, // 18: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.user_attr:type_name -> google.protobuf.StringValue
-	11, // 19: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.user_filter:type_name -> google.protobuf.StringValue
-	11, // 20: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.group_dn:type_name -> google.protobuf.StringValue
-	11, // 21: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.group_attr:type_name -> google.protobuf.StringValue
-	11, // 22: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.group_filter:type_name -> google.protobuf.StringValue
-	11, // 23: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.client_certificate:type_name -> google.protobuf.StringValue
-	11, // 24: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.client_certificate_key:type_name -> google.protobuf.StringValue
-	11, // 25: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.bind_dn:type_name -> google.protobuf.StringValue
-	11, // 26: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.bind_password:type_name -> google.protobuf.StringValue
-	11, // 27: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.dereference_aliases:type_name -> google.protobuf.StringValue
-	15, // 28: controller.api.resources.authmethods.v1.AuthMethod.AuthorizedCollectionActionsEntry.value:type_name -> google.protobuf.ListValue
-	29, // [29:29] is the sub-list for method output_type
-	29, // [29:29] is the sub-list for method input_type
-	29, // [29:29] is the sub-list for extension type_name
-	29, // [29:29] is the sub-list for extension extendee
-	0,  // [0:29] is the sub-list for field type_name
+	11, // 8: controller.api.resources.authmethods.v1.AuthMethod.ldap_auth_methods_attributes:type_name -> controller.api.resources.authmethods.v1.LdapAuthMethodAttributes
+	3,  // 9: controller.api.resources.authmethods.v1.AuthMethod.jwt_auth_methods_attributes:type_name -> controller.api.resources.authmethods.v1.JwtAuthMethodAttributes
+	12, // 10: controller.api.resources.authmethods.v1.AuthMethod.authorized_collection_actions:type_name -> controller.api.resources.authmethods.v1.AuthMethod.AuthorizedCollectionActionsEntry
+	14, // 11: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.issuer:type_name -> google.protobuf.StringValue
+	14, // 12: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.client_id:type_name -> google.protobuf.StringValue
+	14, // 13: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.client_secret:type_name -> google.protobuf.StringValue
+	17, // 14: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.max_age:type_name -> google.protobuf.UInt32Value
+	14, // 15: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.api_url_prefix:type_name -> google.protobuf.StringValue
+	14, // 16: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.provider_type:type_name -> google.protobuf.StringValue
+	17, // 17: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.loopback_listener_port:type_name -> google.protobuf.UInt32Value
+	18, // 18: controller.api.resources.authmethods.v1.OidcAuthMethodAttributes.insecure_controller_callback:type_name -> google.protobuf.BoolValue
+	14, // 19: controller.api.resources.authmethods.v1.JwtAuthMethodAttributes.issuer:type_name -> google.protobuf.StringValue
+	4,  // 20: controller.api.resources.authmethods.v1.JwtAuthMethodAttributes.oidc_discovery:type_name -> controller.api.resources.authmethods.v1.JwtOidcDiscovery
+	5,  // 21: controller.api.resources.authmethods.v1.JwtAuthMethodAttributes.jwks_pairs:type_name -> controller.api.resources.authmethods.v1.JwtJwksPair
+	14, // 22: controller.api.resources.authmethods.v1.JwtAuthMethodAttributes.jwks_json:type_name -> google.protobuf.StringValue
+	19, // 23: controller.api.resources.authmethods.v1.JwtAuthMethodAttributes.clock_skew_leeway:type_name -> google.protobuf.Int32Value
+	19, // 24: controller.api.resources.authmethods.v1.JwtAuthMethodAttributes.expiration_leeway:type_name -> google.protobuf.Int32Value
+	19, // 25: controller.api.resources.authmethods.v1.JwtAuthMethodAttributes.not_before_leeway:type_name -> google.protobuf.Int32Value
+	14, // 26: controller.api.resources.authmethods.v1.JwtOidcDiscovery.issuer_ca_pem:type_name -> google.protobuf.StringValue
+	14, // 27: controller.api.resources.authmethods.v1.JwtJwksPair.jwks_url:type_name -> google.protobuf.StringValue
+	14, // 28: controller.api.resources.authmethods.v1.JwtJwksPair.jwks_ca_pem:type_name -> google.protobuf.StringValue
+	14, // 29: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.upn_domain:type_name -> google.protobuf.StringValue
+	14, // 30: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.user_dn:type_name -> google.protobuf.StringValue
+	14, // 31: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.user_attr:type_name -> google.protobuf.StringValue
+	14, // 32: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.user_filter:type_name -> google.protobuf.StringValue
+	14, // 33: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.group_dn:type_name -> google.protobuf.StringValue
+	14, // 34: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.group_attr:type_name -> google.protobuf.StringValue
+	14, // 35: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.group_filter:type_name -> google.protobuf.StringValue
+	14, // 36: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.client_certificate:type_name -> google.protobuf.StringValue
+	14, // 37: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.client_certificate_key:type_name -> google.protobuf.StringValue
+	14, // 38: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.bind_dn:type_name -> google.protobuf.StringValue
+	14, // 39: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.bind_password:type_name -> google.protobuf.StringValue
+	14, // 40: controller.api.resources.authmethods.v1.LdapAuthMethodAttributes.dereference_aliases:type_name -> google.protobuf.StringValue
+	20, // 41: controller.api.resources.authmethods.v1.AuthMethod.AuthorizedCollectionActionsEntry.value:type_name -> google.protobuf.ListValue
+	42, // [42:42] is the sub-list for method output_type
+	42, // [42:42] is the sub-list for method input_type
+	42, // [42:42] is the sub-list for extension type_name
+	42, // [42:42] is the sub-list for extension extendee
+	0,  // [0:42] is the sub-list for field type_name
 }
 
 func init() { file_controller_api_resources_authmethods_v1_auth_method_proto_init() }
@@ -1417,6 +1842,7 @@ func file_controller_api_resources_authmethods_v1_auth_method_proto_init() {
 		(*AuthMethod_PasswordAuthMethodAttributes)(nil),
 		(*AuthMethod_OidcAuthMethodsAttributes)(nil),
 		(*AuthMethod_LdapAuthMethodsAttributes)(nil),
+		(*AuthMethod_JwtAuthMethodsAttributes)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1424,7 +1850,7 @@ func file_controller_api_resources_authmethods_v1_auth_method_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc), len(file_controller_api_resources_authmethods_v1_auth_method_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
